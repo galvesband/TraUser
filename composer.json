@@ -1,0 +1,28 @@
+{
+  "name" : "galvesband/tra-user-bundle",
+  "license": "proprietary",
+  "description" : "A simple User bundle",
+  "type" : "symfony-bundle",
+  "authors" : [{
+    "name" : "Rafael Gálvez-Cañero",
+    "email" : "galvesband@gmail.com"
+  }],
+  "keywords" : [
+    "galvesband", "user", "tratra"
+  ],
+  "require" : {
+  },
+  "autoload" : {
+    "psr-0" : {
+      "Galvesband\\TraUserBundle" : ""
+    }
+  },
+  "target-dir" : "Galvesband/TraUserBundle",
+  "repositories" : [{
+  }],
+  "extra" : {
+    "branch-alias" : {
+      "dev-master" : "master"
+    }
+  }
+}
