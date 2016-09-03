@@ -116,10 +116,13 @@ class User implements AdvancedUserInterface, \Serializable {
         $roles = [];
         foreach ($this->getGroups() as $group) {
             foreach ($group->getRoles() as $role) {
-                $roles[] = $role->getRole();
+                if (!isset($roles[$role->getRole()])) {
+                    $roles[$role->getRole()] = $role->getRole();
+                }
             }
         }
 
+        $roles = array_values($roles);
         if (count($roles) === 0) {
             $roles[] = 'ROLE_USER';
         }
