@@ -20,9 +20,8 @@ cosa que no parece sencilla  con nuestro actual despliegue en
 [Galvesband's](https://galvesband.ddns.info/code/).
 
 ```json
-[...]
     "require" : {
-        [...]
+        "SomeOther/Bundles" : "some-branch-or-version",
         "Galvesband/TraUserBundle" : "dev-master"
     },
     "repositories" : [{
@@ -36,10 +35,10 @@ Habría que reemplazar `TBD` con la url pública del repositorio.
 # Configuración de un proyecto para desarrollo #
 
 Hay que crear un proyecto Symfony 3.1 vacío y clonar el repositorio en 
-`src/Galvesband/traUser/`.
+`src/Galvesband/TraUserBundle/`.
 
 ```bash
-# Crear proyecto sf
+# Crear proyecto Symfony
 $ composer create-project symfony/framework-standard-edition traUser "3.1.*"
 
 # Clonar repositorio de traUser para desarrollo
@@ -101,12 +100,13 @@ doctrine:
             collate: utf8mb4_unicode_ci
 ```
 
- - Importar enturado del bundle
+ - Importar enrutado del bundle
  
 ```yaml
 galvesband_tra_user:
     resource: "@GalvesbandTraUserBundle/Controller/"
     type:     annotation
+    # Usar el prefijo que convenga para el desarrollo y testeo
     prefix:   /
 ```
 
@@ -135,6 +135,68 @@ security:
       pattern: ^/
       http_basic: ~
       provider: tra_user_provider
+```
+
+Por último, hay que configurar la conexión de base de datos del proyecto.
+Lo que yo personalmente suelo hacer es usar `docker`:
+
+ - Crear directorio en algún lugar, da igual dónde (yo suelo usar
+ un subdirectorio `docker` dentro del proyecto Symfony) llamado (por ejemplo) 
+ `traUser-database-only` y dentro un archivo con nombre `docker-compose.yml` 
+ con el siguiente contenido:
+ 
+```yaml
+version: '2'
+
+# Un único contenedor para proveernos de una base de datos 
+services:
+db:
+ image: mariadb:10.1
+ volumes:
+   # Guardamos los volúmenes de la base de datos en ./data.
+   # Borra el directorio para resetear las bases de datos
+   - "./data/db:/var/lib/mysql"
+ restart: always
+ environment:
+   # Datos de conexión
+   MYSQL_ROOT_PASSWORD: changeme
+   MYSQL_USER: traUser_user
+   MYSQL_PASSWORD: traUser_pwd
+   MYSQL_DATABASE: traUser_db
+ ports:
+   # Acceso a la base de datos a través de localhost:3306
+   - "127.0.0.1:3306:3306"
+```
+ 
+ - cambiar a ese directorio y ejecutar:
+  
+```bash
+$ docker-compose up -d
+```
+
+ - Configurar Symfony creando o editando el archivo `app/config/parameters.yml` con estos parámetros:
+
+```yaml
+parameters:
+    database_host: 127.0.0.1
+    database_port: 3306
+    database_name: traUser_db
+    database_user: traUser_user
+    database_password: traUser_pwd
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    # Cambiar por algo aleatorio
+    secret: blahblah-some-secret
+```
+
+Ya esta todo. Lo que queda son los pasos que habría que seguir en todo
+proyecto Symfony para crear/actualizar el esquema de la base de datos, 
+etcétera:
+
+```bash
+$ php bin/console doctrine:schema:create
 ```
 
 ## Referencia ##
