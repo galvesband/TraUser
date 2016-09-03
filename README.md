@@ -1,34 +1,23 @@
-# A simple User bundle for Symfony #
+# TraUserBundle #
 
-Hey, `FOSUserBundle` seems so... powerful it is almost scary. Look at me, i'm a simple
-user bundle! (try to think on this like in a Rick And Morty-ish background character voice).
+Un Bundle para Symfony 3 que proporciona una implementación no demasiado complicada
+de usuarios y grupos.
 
-## What does it do? ##
+La idea es tener usuarios y grupos. Los usuarios en sí mismo no tienen permisos
+asociados, pero pertenecen a grupos, y estos si tienen permisos asociados (roles).
 
-Users. It does users. 
+## Usar el proyecto ##
 
-Also, groups.
+No lo llamaría "usable" de momento... pero en fin. Al final del `readme.md` he incluído
+unos enlaces con información que puede resultar útil. Hay varios sistemas, la cosa es
+encontrar uno que no sea un coñazo.
 
-But what about security? Groups have roles and users hopefully have groups. Login forms
-and that kind of funcionality is planned. Just that, planned.
-
-## Requirements ##
-
-I don't really know. Im using Symfony 3.1 with its standard distribution, and
-I'm gonna require Doctrine for sure. Not sure what else.
-
-## Corolary ##
-
-I just want to learn how does Symfony work. A simple bundle for users seemed like a
-good starting point. So keep in mind that...
-
-**I don't really know what I'm doing. Act accordingly.**
-
-## What to do if you want to use this Bundle? ##
-
-Oh boy you are so fucked. 
-
-I'll throw a hint at how composer.json should look in your proyect:
+La opción más tentadora es usar `composer` y `packagist` para añadir el bundle como
+uno más y después simplemente requerirlo en los proyectos que lo necesitamos. También
+se puede añadir al `composer.json` información sobre el paquete directamente desde
+un VCS, pero eso supongo que implicaría tener acceso desde el servidor a ese VCS,
+cosa que no parece sencilla  con nuestro actual despliegue en 
+[Galvesband's](https://galvesband.ddns.info/code/).
 
 ```json
 [...]
@@ -42,19 +31,88 @@ I'll throw a hint at how composer.json should look in your proyect:
     }],
 ```
 
-You'll have to replace `TBD` with a real url. I don't know where will I host this yet, tho.
+Habría que reemplazar `TBD` con la url pública del repositorio.
 
-# Configuración de un proyecto #
+# Configuración de un proyecto para desarrollo #
 
 Hay que crear un proyecto Symfony 3.1 vacío y clonar el repositorio en 
 `src/Galvesband/traUser/`.
 
-Con eso hecho, hay que configurar el proyecto. Por un lado activar el bundle en
-`AppKernel.php`, después añadir a `config.yml` la carga del `services.yml` del bundle
-y del `routing.yml` y tal.
+```bash
+# Crear proyecto sf
+$ composer create-project symfony/framework-standard-edition traUser "3.1.*"
 
-Por último, para que Symfony utilice el usuario para autentificación, de momento hay 
-que añadir lo siguiente a `security.yml` (o algo parecido):
+# Clonar repositorio de traUser para desarrollo
+$ cd traUser/src
+$ mkdir Galvesband
+$ cd Galvesband
+$ git clone ssh://git@galvesband.ddns.info:10022/galvesband/traUser.git TraUserBundle 
+```
+
+Quedaría descargar las posibles dependencias de TraUserBundle. Aún tengo que pensar
+en la mejor forma de hacer esto con `composer`. Como de momento no hay dependencias
+realmente pues pasando...
+
+Lo siguiente es configurar Symfony para que use traUserBundle.
+
+ - Activar bundle
+ 
+```php
+public function registerBundles()
+{
+    $bundles = [
+        // Bundles por defecto...
+        // [...]
+        new AppBundle\AppBundle(),
+        // Añadir la siguiente línea
+        new Galvesband\TraUserBundle\GalvesbandTraUserBundle(),
+    ];
+
+    // [...]
+}
+```
+
+  - Importar configuración (config.yml)
+
+```yaml
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+    # Cargar servicios de TraUserBundle:
+    - { resource: "@GalvesbandTraUserBundle/Resources/config/services.yml" }
+
+# [...]
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver:   pdo_mysql
+        host:     "%database_host%"
+        port:     "%database_port%"
+        dbname:   "%database_name%"
+        user:     "%database_user%"
+        password: "%database_password%"
+        # Si es posible (MySQL o MariaDB son versiones razonablemente recientes)
+        # usar utf8mb4 como collation (soporte unicode de 4 bytes)
+        charset:  utf8mb4
+        default_table_options:
+            charset: utf8mb4
+            collate: utf8mb4_unicode_ci
+```
+
+ - Importar enturado del bundle
+ 
+```yaml
+galvesband_tra_user:
+    resource: "@GalvesbandTraUserBundle/Controller/"
+    type:     annotation
+    prefix:   /
+```
+
+ - Configurar firewalls y demás mierdas para que use las clases de TraUserBundle. Esta
+ parte aún no está muy clara. De momento dejo esto como referencia futura, ya lo actualizaré
+ cuando sepa exactamente cómo va la cosa.
 
 ```yaml
 security:
