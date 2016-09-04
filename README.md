@@ -34,6 +34,22 @@ Habría que reemplazar `TBD` con la url pública del repositorio.
 
 # Configuración de un proyecto para desarrollo #
 
+En resumen estos son los pasos:
+
+ - Crear un proyecto Symfony vacío.
+ 
+ - Descargar el código de TraUserBundle.
+ 
+ - Instalar y configurar en el proyecto las dependencias de TraUserBundle.
+ 
+ - Configurar TraUserBundle
+ 
+ - Configurar la conexión a la base de datos del proyecto.
+ 
+ - Puesta en marcha.
+
+## Proyecto para desarrollar el bundle dentro ##
+
 Hay que crear un proyecto Symfony 3.1 vacío y clonar el repositorio en 
 `src/Galvesband/TraUserBundle/`.
 
@@ -48,30 +64,77 @@ $ cd Galvesband
 $ git clone ssh://git@galvesband.ddns.info:10022/galvesband/traUser.git TraUserBundle 
 ```
 
-Quedaría descargar las posibles dependencias de TraUserBundle. Aún tengo que pensar
-en la mejor forma de hacer esto con `composer`. Como de momento no hay dependencias
-realmente pues pasando...
+## Requerimientos de TraUserBundle ##
+
+### Sonata Core Bundle ###
+
+[Referencia](https://sonata-project.org/bundles/core/master/doc/reference/installation.html).
+
+Hay que añadir a `composer.json` los siguientes requerimientos:
+
+ - `sonata-project/core-bundle : "3.1.*"`
+ 
+ - `twig/extensions : 1.3.*`, que parece ser necesario aunque no está
+   incluido en los requerimientos de SonataCoreBundle. *Parece* que la 
+   versión `1.3` funciona bien con Sonata.
+
+Hay que activar el SonataCoreBundle, añadiendo la siguiente línea al `app/AppKernel.php`:
+
+```php
+    public function registerBundles() {
+        $bundles = [
+            // [...]
+            // Sonata stuff
+            new Sonata\CoreBundle\SonataCoreBundle(),
+
+            new AppBundle\AppBundle(),
+            // [...]
+        ];
+        // [...]
+    }
+```
+
+### Sonata Admin Bundle ###
+
+[Referencia](https://sonata-project.org/bundles/admin/3-x/doc/index.html).
+
+Esto implica varios bundles:
+
+ - SonataAdminBundle: núcleo del entorno de administración de Sonata.
+ 
+ - SonataDoctrineORMAdminBundle: integra Doctrine en Sonata. Si 
+   usaramos otro almacenamiento como Mongo o Propel habría que
+   usar otro Bundle, pero TraUser usa Doctrine.
+
+TODO
+
+## Configurando TraUserBundle ##
 
 Lo siguiente es configurar Symfony para que use traUserBundle.
 
- - Activar bundle
+### Activando el bundle ###
  
-```php
-public function registerBundles()
-{
-    $bundles = [
-        // Bundles por defecto...
-        // [...]
-        new AppBundle\AppBundle(),
-        // Añadir la siguiente línea
-        new Galvesband\TraUserBundle\GalvesbandTraUserBundle(),
-    ];
+ ```php
+     public function registerBundles() {
+         $bundles = [
+             // [...]
+             // Sonata stuff
+             new Sonata\CoreBundle\SonataCoreBundle(),
+             // [...]
+             
+             // Añadir la siguiente línea
+             new Galvesband\TraUserBundle\GalvesbandTraUserBundle(),
+ 
+             new AppBundle\AppBundle(),
+             // [...]
+         ];
+         // [...]
+     }
+ ```
 
-    // [...]
-}
-```
+### Importando la configuración y el enrutado ###
 
-  - Importar configuración (config.yml)
+ - Configuración
 
 ```yaml
 imports:
@@ -110,9 +173,11 @@ galvesband_tra_user:
     prefix:   /
 ```
 
- - Configurar firewalls y demás mierdas para que use las clases de TraUserBundle. Esta
- parte aún no está muy clara. De momento dejo esto como referencia futura, ya lo actualizaré
- cuando sepa exactamente cómo va la cosa.
+### Seguridad: autentificando con TraUserBundle ###
+
+Hay que configurar firewalls y demás mierdas para que use las clases de TraUserBundle. Esta
+parte aún no está muy clara. De momento dejo esto como referencia futura, ya lo actualizaré
+cuando sepa exactamente cómo va la cosa.
 
 ```yaml
 security:
@@ -136,6 +201,8 @@ security:
       http_basic: ~
       provider: tra_user_provider
 ```
+
+## Configurando la conexión a la base de datos ##
 
 Por último, hay que configurar la conexión de base de datos del proyecto.
 Lo que yo personalmente suelo hacer es usar `docker`:
@@ -198,6 +265,18 @@ etcétera:
 ```bash
 $ php bin/console doctrine:schema:create
 ```
+
+## Lanzando el proyecto ##
+
+Con la base de datos andando, lo mejor es usar el servidor de desarrollo
+de php, lo que es muy fácil porque hay un comando de Symfony para ello:
+
+```bash
+$ app/console server:start
+```
+
+La aplicación debe estar disponible en 
+[localhost:8000](http://localhost:8000).
 
 ## Referencia ##
 

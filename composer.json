@@ -11,6 +11,8 @@
     "galvesband", "user", "tratra"
   ],
   "require" : {
+    "sonata-project/core-bundle" : "3.1.*",
+    "twig/extensions": "v1.3.*"
   },
   "autoload" : {
     "psr-0" : {
