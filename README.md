@@ -94,6 +94,13 @@ Hay que activar el SonataCoreBundle, añadiendo la siguiente línea al `app/AppK
     }
 ```
 
+Aunque no parece necesario si no se toca la configuración por defecto, 
+puede ser buena idea incluir esto en `app/config/config.yml`:
+
+```yaml
+sonata_core: ~
+```
+
 ### Sonata Admin Bundle ###
 
 [Referencia](https://sonata-project.org/bundles/admin/3-x/doc/index.html).
@@ -104,9 +111,102 @@ Esto implica varios bundles:
  
  - SonataDoctrineORMAdminBundle: integra Doctrine en Sonata. Si 
    usaramos otro almacenamiento como Mongo o Propel habría que
-   usar otro Bundle, pero TraUser usa Doctrine.
+   usar otro Bundle, pero TraUser usa Doctrine. 
 
-TODO
+Lo cual se traduce en añadir los siguientes requerimientos al proyecto Symfony:
+
+ - `"sonata-project/admin-bundle" : "3.6.*"`. Esto introducirá una serie
+   de Bundles nuevos en el proyecto, requeridos por SonataAdmin.
+ 
+ - `"sonata-project/doctrine-orm-admin-bundle" : "3.0.*"`
+
+Tras ello habrá que configurar los nuevos bundles.
+
+#### Activando los Bundles ####
+
+Hay que añadir el siguiente código a `app/AppKernel.php`:
+
+```php
+class AppKernel extends Kernel
+{
+    public function registerBundles()
+    {
+        $bundles = [
+            // [...]
+            
+            // Sonata Admin requirements
+            new Sonata\CoreBundle\SonataCoreBundle(),
+            new Sonata\BlockBundle\SonataBlockBundle(),
+            new Knp\Bundle\MenuBundle\KnpMenuBundle(),
+            
+            // Sonata Admin
+            new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
+            new Sonata\AdminBundle\SonataAdminBundle(),
+            
+            // Other stuff, like... TraUserBundle
+            new Galvesband\TraUserBundle\GalvesbandTraUserBundle(),
+                        
+            new AppBundle\AppBundle(),
+            // [...]
+        ];
+        // [...]
+    }
+    // [...]
+}
+```
+
+#### Configurando los Bundle ####
+
+El administrador usa el SonataBlockBundle para ponerlo todo en bloques. Esto aparentemente
+significa que sólo tenemos que decirle al SonataBlockBundle que existe el bloque Admin, 
+o algo así, en `app/config/config.yml`.
+
+```yaml
+sonata_block:
+  default_contexts: [cms]
+  blocks:
+    sonata.admin.block.admin_list:
+      contexts: [admin]
+```
+
+#### Activando Symfony translator ####
+
+SonataAdmin requiere el componente de traducción. Hay documentación 
+[aquí](http://symfony.com/doc/current/book/translation.html#book-translation-configuration).
+
+Basicamente, es ir a `app/config/config.yml` y editar o añadir lo siguiente:
+
+```yaml
+framework:
+  translator: { fallbacks: ["es_ES", "en"] } 
+```
+
+#### Configurando el enrutado de Admin ####
+
+Hay que editar `app/config/routing.yml` y añadir lo siguiente:
+
+```yaml
+admin_area:
+  resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
+  prefix: /admin
+```
+
+#### Último paso - Caché y assets ####
+
+Teoricamente después de instalar bundles lo suyo es hacer esto. En
+este caso sobre todo lo de los assets.
+ 
+```bash
+$ bin/console cache:clear
+$ bin/console assets:install --symlink
+```
+
+**Nota:** Recuerda que si usas PhpStorm puede convenir refrescar
+el comando Symfony en el entorno porque habrá nuevos comandos de Sonata.
+
+**Nota:** Tras esto el entorno de administración debería ser accesible en
+[localhost:8000/admin](http://localhost:8000/admin) (suponiendo que uses el
+servidor web de php).
 
 ## Configurando TraUserBundle ##
 
