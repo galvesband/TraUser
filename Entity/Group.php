@@ -175,4 +175,8 @@ class Group {
     {
         return $this->roles;
     }
+
+    public function __toString() {
+        return $this->getName();
+    }
 }

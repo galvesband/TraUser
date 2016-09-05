@@ -24,4 +24,10 @@ class GroupAdmin extends AbstractAdmin {
     protected function configureListFields(ListMapper $listMapper) {
         $listMapper->addIdentifier('name');
     }
+
+    public function toString($object) {
+        return $object instanceof \Galvesband\TraUserBundle\Entity\Group
+            ? $object->getName()
+            : 'Group';
+    }
 }
