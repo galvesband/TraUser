@@ -191,6 +191,18 @@ admin_area:
   prefix: /admin
 ```
 
+Además, SonataAdminBundle genera rutas al vuelo para las clases de tipo `Admin`. Para que
+funcione hay que asegurarse de que el cargador de enrutado de SonataAdminBundle se ejecuta:
+
+```yaml
+# app/config/routing.yml
+
+_sonata_admin:
+  resource: .
+  type: sonata_admin
+  prefix: /admin
+```
+
 #### Último paso - Caché y assets ####
 
 Teoricamente después de instalar bundles lo suyo es hacer esto. En
