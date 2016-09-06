@@ -295,8 +295,7 @@ cuando sepa exactamente cómo va la cosa.
 security:
   [...]
   encoders:
-    Galvesband\TraUserBundle\Entity\User:
-      algorithm: bcrypt
+    Galvesband\TraUserBundle\Entity\User: bcrypt
   
   providers:
     [...]

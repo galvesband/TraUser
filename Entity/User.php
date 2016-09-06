@@ -4,12 +4,31 @@ namespace Galvesband\TraUserBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 /**
  * Class User
+ *
+ * Password hashing:
+ *   This is how it works.
+ *
+ *   When you want to create a new user or update the password of an
+ *   old one, you just need to set the new one through the
+ *   setPlainPassword() method. It will internally set that plain
+ *   password into a private member variable not mapped to the database.
+ *
+ *   The bundle registers a couple of event listeners that wait for
+ *   doctrine's prePersist and preUpdate. If the persisted entity
+ *   is an user, it will use
+ *   TraUserBundle\DependencyInjection\UserManager::updateUser()
+ *   to hash the plain password with the encoder configured in
+ *   the security file.
+ *
  * @package Galvesband\TraUserBundle\Entity
  * @ORM\Entity(repositoryClass="Galvesband\TraUserBundle\Entity\UserRepository")
+ * @ORM\UniqueEntity(fields="name", message="Username already taken")
+ * @ORM\UniqueEntity(fields="email", message="Email already in use")
  * @ORM\Table(name="tra_user")
  */
 class User implements AdvancedUserInterface, \Serializable {
@@ -23,17 +42,34 @@ class User implements AdvancedUserInterface, \Serializable {
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=50, unique=true)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Assert\NotBlank()
+     * @ORM\Assert\Length(max=255, min=4)
      */
     private $name;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=100, unique=true)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Email()
      */
     private $email;
 
     /**
+     * Holds the plain password. Not a column.
+     *
+     * @var string
+     * @Assert\NotBlank()
+     * @Assert\Length(max=4096)
+     */
+    private $plainPassword;
+
+    /**
+     * Hashed password.
+     *
+     * Length 64 works well with bcrypt.
+     *
      * @var string
      * @ORM\Column(type="string", length=64)
      */
@@ -58,10 +94,17 @@ class User implements AdvancedUserInterface, \Serializable {
      */
     private $groups;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->isActive = true;
-        $this->salt = md5(uniqid(null, true));
+        // BCrypt doesn't need salting... So this is mostly useless.
+        $this->refreshSalt();
         $this->groups = new ArrayCollection();
+    }
+
+    public function refreshSalt()
+    {
+        $this->salt = md5(uniqid(null, true));
     }
 
     // Implementation of UserInterface
@@ -146,6 +189,7 @@ class User implements AdvancedUserInterface, \Serializable {
      * the plain-text password is stored on this object.
      */
     public function eraseCredentials() {
+        $this->plainPassword = '';
     }
 
     /**
@@ -311,6 +355,33 @@ class User implements AdvancedUserInterface, \Serializable {
     public function setSalt($salt)
     {
         $this->salt = $salt;
+
+        return $this;
+    }
+
+    /**
+     * Gets the plain-form password.
+     *
+     * @return string
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * Sets a plain password
+     *
+     * @param $password string
+     * @return $this
+     */
+    public function setPlainPassword($password)
+    {
+        $this->plainPassword = $password;
+
+        // Changing some mapped values so preUpdate will get called.
+        $this->refreshSalt();
+        $this->password = '';
 
         return $this;
     }
