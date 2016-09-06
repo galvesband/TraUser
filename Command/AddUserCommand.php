@@ -4,6 +4,7 @@ namespace Galvesband\TraUserBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use \Galvesband\TraUserBundle\Entity\User;
@@ -30,7 +31,7 @@ class AddUserCommand extends ContainerAwareCommand
             ->addArgument('username', InputArgument::REQUIRED, "The name of the new user.")
             ->addArgument('email', InputArgument::REQUIRED, "The email of the user")
             ->addArgument('password', InputArgument::REQUIRED, "The password of the new user")
-            ->addOption("inactive", "i", null, "Sets the new user as inactive.", false);
+            ->addOption("inactive", "i", InputOption::VALUE_OPTIONAL, "Sets the new user as inactive.", false);
     }
 
     /**

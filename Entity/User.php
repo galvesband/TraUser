@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Class User
@@ -27,8 +28,8 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *
  * @package Galvesband\TraUserBundle\Entity
  * @ORM\Entity(repositoryClass="Galvesband\TraUserBundle\Entity\UserRepository")
- * @ORM\UniqueEntity(fields="name", message="Username already taken")
- * @ORM\UniqueEntity(fields="email", message="Email already in use")
+ * @UniqueEntity(fields="name", message="Username already taken")
+ * @UniqueEntity(fields="email", message="Email already in use")
  * @ORM\Table(name="tra_user")
  */
 class User implements AdvancedUserInterface, \Serializable {
@@ -43,8 +44,8 @@ class User implements AdvancedUserInterface, \Serializable {
     /**
      * @var string
      * @ORM\Column(type="string", length=255, unique=true)
-     * @ORM\Assert\NotBlank()
-     * @ORM\Assert\Length(max=255, min=4)
+     * @Assert\NotBlank()
+     * @Assert\Length(max=255, min=4)
      */
     private $name;
 
