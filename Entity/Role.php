@@ -163,4 +163,9 @@ class Role {
     {
         return $this->groups;
     }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }

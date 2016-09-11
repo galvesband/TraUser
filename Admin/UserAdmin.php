@@ -17,15 +17,18 @@ class UserAdmin extends AbstractAdmin {
                 ->add('name', 'text')
                 ->add('email', 'text')
                 ->add('isActive')
+                ->add('groups', 'entity', [
+                    'class' => 'Galvesband\TraUserBundle\Entity\Group',
+                    'multiple' => true
+                ])
             ->end()
 
             ->with('Authentication', ['class' => 'col-md-6'])
-                ->add('password')
-            ->end()
-            ->add('groups', 'entity', [
-                'class' => 'Galvesband\TraUserBundle\Entity\Group',
-                'multiple' => true
-            ]);
+                ->add('plainPassword', 'password', [
+                    'required' => false,
+                    'label' => 'Password',
+                ])
+            ->end();
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper) {
@@ -36,7 +39,17 @@ class UserAdmin extends AbstractAdmin {
     }
 
     protected function configureListFields(ListMapper $listMapper) {
-        $listMapper->addIdentifier('name');
+        $listMapper
+            ->addIdentifier('name')
+            ->add('email')
+            ->add('isActive')
+            ->add('groups')
+            ->add('_action', 'actions', [
+                'actions' => [
+                    'edit' => [],
+                    'delete' => [],
+                ]
+            ]);
     }
 
     /**

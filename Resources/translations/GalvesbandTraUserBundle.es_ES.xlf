@@ -70,9 +70,17 @@
                 <source>Authentication</source>
                 <target>Identificación</target>
             </trans-unit>
+            <trans-unit id="Password">
+                <source>Password</source>
+                <target>Contraseña</target>
+            </trans-unit>
             <trans-unit id="Description">
                 <source>Description</source>
                 <target>Descripción</target>
+            </trans-unit>
+            <trans-unit id="Actions">
+                <source>Actions</source>
+                <target>Acciones</target>
             </trans-unit>
         </body>
     </file>

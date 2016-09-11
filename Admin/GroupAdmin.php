@@ -13,18 +13,36 @@ class GroupAdmin extends AbstractAdmin {
 
     protected function configureFormFields(FormMapper $formMapper) {
         $formMapper
-            ->add('name')
-            ->add('description');
+            ->with('Basic Information')
+                ->add('name', 'text')
+                ->add('description', 'text')
+            ->end()
+            ->with('Roles')
+                ->add('roles', 'entity', [
+                    'class' => 'Galvesband\TraUserBundle\Entity\Role',
+                    'multiple' => true
+                ])
+            ->end();
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper) {
         $datagridMapper
             ->add('name')
-            ->add('description');
+            ->add('description')
+            ->add('roles');
     }
 
     protected function configureListFields(ListMapper $listMapper) {
-        $listMapper->addIdentifier('name');
+        $listMapper
+            ->addIdentifier('name')
+            ->add('description')
+            ->add('roles')
+            ->add('_action', 'actions', [
+                'actions' => [
+                    'edit' => [],
+                    'delete' => [],
+                ]
+            ]);
     }
 
     public function toString($object) {

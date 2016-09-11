@@ -26,6 +26,15 @@ class RoleAdmin extends AbstractAdmin {
     }
 
     protected function configureListFields(ListMapper $listMapper) {
-        $listMapper->addIdentifier('name');
+        $listMapper
+            ->addIdentifier('name')
+            ->add('description')
+            ->add('role')
+            ->add('_action', 'actions', [
+                'actions' => [
+                    'edit' => [],
+                    'delete' => [],
+                ]
+            ]);
     }
 }
