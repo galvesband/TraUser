@@ -9,6 +9,8 @@ use Sonata\AdminBundle\Form\FormMapper;
 
 class GroupAdmin extends AbstractAdmin {
 
+    protected $translationDomain = 'GalvesbandTraUserBundle';
+
     protected function configureFormFields(FormMapper $formMapper) {
         $formMapper
             ->add('name')

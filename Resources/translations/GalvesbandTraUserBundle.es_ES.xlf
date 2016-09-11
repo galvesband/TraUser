@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="User">
+                <source>User</source>
+                <target>Usuario</target>
+            </trans-unit>
+            <trans-unit id="Users">
+                <source>Users</source>
+                <target>Usuarios</target>
+            </trans-unit>
+            <trans-unit id="User List">
+                <source>User List</source>
+                <target>Lista de Usuarios</target>
+            </trans-unit>
+            <trans-unit id="User Create">
+                <source>User Create</source>
+                <target>Crear Usuario</target>
+            </trans-unit>
+            <trans-unit id="Group">
+                <source>Group</source>
+                <target>Grupo</target>
+            </trans-unit>
+            <trans-unit id="Groups">
+                <source>Groups</source>
+                <target>Grupos</target>
+            </trans-unit>
+            <trans-unit id="Group List">
+                <source>Group List</source>
+                <target>Lista de Grupos</target>
+            </trans-unit>
+            <trans-unit id="Group Create">
+                <source>Group Create</source>
+                <target>Crear Grupo</target>
+            </trans-unit>
+            <trans-unit id="Role">
+                <source>Role</source>
+                <target>Rol</target>
+            </trans-unit>
+            <trans-unit id="Roles">
+                <source>Roles</source>
+                <target>Roles</target>
+            </trans-unit>
+            <trans-unit id="Role List">
+                <source>Role List</source>
+                <target>Lista de Roles</target>
+            </trans-unit>
+            <trans-unit id="Role Create">
+                <source>Role Create</source>
+                <target>Crear Rol</target>
+            </trans-unit>
+            <trans-unit id="Basic Information">
+                <source>Basic Information</source>
+                <target>Información Básica</target>
+            </trans-unit>
+            <trans-unit id="Name">
+                <source>Name</source>
+                <target>Nombre</target>
+            </trans-unit>
+            <trans-unit id="Email">
+                <source>Email</source>
+                <target>Email</target>
+            </trans-unit>
+            <trans-unit id="Is Active">
+                <source>Is Active</source>
+                <target>Activo</target>
+            </trans-unit>
+            <trans-unit id="Authentication">
+                <source>Authentication</source>
+                <target>Identificación</target>
+            </trans-unit>
+            <trans-unit id="Description">
+                <source>Description</source>
+                <target>Descripción</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

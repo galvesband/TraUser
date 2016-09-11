@@ -3,19 +3,19 @@ services:
     class: Galvesband\TraUserBundle\Admin\UserAdmin
     arguments: [~, Galvesband\TraUserBundle\Entity\User, ~]
     tags:
-      - { name: sonata.admin, manager_type: orm, label: User }
+      - { name: sonata.admin, manager_type: orm, group: Users and Permissions, label: Users }
 
   admin.group:
     class: Galvesband\TraUserBundle\Admin\GroupAdmin
     arguments: [~, Galvesband\TraUserBundle\Entity\Group, ~]
     tags:
-      - { name: sonata.admin, manager_type: orm, label: Group }
+      - { name: sonata.admin, manager_type: orm, group: Users and Permissions, label: Groups }
 
   admin.role:
     class: Galvesband\TraUserBundle\Admin\RoleAdmin
     arguments: [~, Galvesband\TraUserBundle\Entity\Role, ~]
     tags:
-      - { name: sonata.admin, manager_type: orm, label: Role }
+      - { name: sonata.admin, manager_type: orm, group: Users and Permissions, label: Roles }
 
   tra_user.manager:
     class: Galvesband\TraUserBundle\DependencyInjection\UserManager

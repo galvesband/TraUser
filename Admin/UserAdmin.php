@@ -9,9 +9,11 @@ use Sonata\AdminBundle\Form\FormMapper;
 
 class UserAdmin extends AbstractAdmin {
 
+    protected $translationDomain = 'GalvesbandTraUserBundle';
+
     protected function configureFormFields(FormMapper $formMapper) {
         $formMapper
-            ->with('Basic Data', ['class' => 'col-md-6'])
+            ->with('Basic Information', ['class' => 'col-md-6'])
                 ->add('name', 'text')
                 ->add('email', 'text')
                 ->add('isActive')
