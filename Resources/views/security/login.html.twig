@@ -1,0 +1,44 @@
+{% extends "@GalvesbandTraUser/layout.html.twig" %}
+
+{% block tra_user_content %}
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="panel panel-info">
+
+                <div class="panel-heading">
+                    <h2 class="panel-title">{{ 'Authentication'|trans({}, 'GalvesbandTraUserBundle') }}</h2>
+                </div>
+
+                <div class="panel-body">
+
+                {% if error %}
+                    <div class="alert alert-danger alert-error">{{ error|trans({}) }}</div>
+                {% endif %}
+
+
+                <form action="{{ path("login_check") }}" method="post" role="form" class="form-horizontal">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+
+                    <div class="form-group">
+                        <label for="username" class="col-sm-4 control-label">{{ 'User name'|trans({}, 'GalvesbandTraUserBundle') }}</label>
+                        <div class="col-sm-8"><input type="text" class="form-control" id="username" name="_username" value="{{ last_username }}" required="required"/></div>
+                    </div>
+
+
+                    <div class="form-group control-group">
+                        <label for="password" class="col-sm-4 control-label">{{ 'Password'|trans({}, 'GalvesbandTraUserBundle') }}</label>
+                        <div class="col-sm-8"><input type="password" class="form-control" id="password" name="_password" required="required"/></div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-4 col-sm-8">
+                            <input type="submit" id="_submit" name="_submit" class="btn btn-primary" value="{{ 'Identify'|trans({}, 'GalvesbandTraUserBundle') }}"/>
+                        </div>
+                    </div>
+                </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock tra_user_content %}

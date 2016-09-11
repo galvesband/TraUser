@@ -50,6 +50,10 @@
                 <source>Role Create</source>
                 <target>Crear Rol</target>
             </trans-unit>
+            <trans-unit id="Action">
+                <source>Action</source>
+                <target>Acción</target>
+            </trans-unit>
             <trans-unit id="Basic Information">
                 <source>Basic Information</source>
                 <target>Información Básica</target>
@@ -81,6 +85,16 @@
             <trans-unit id="Actions">
                 <source>Actions</source>
                 <target>Acciones</target>
+            </trans-unit>
+
+            <!-- login -->
+            <trans-unit id="User name">
+                <source>User name</source>
+                <target>Nombre de usuario</target>
+            </trans-unit>
+            <trans-unit id="Identify">
+                <source>Identify</source>
+                <target>Identificar</target>
             </trans-unit>
         </body>
     </file>

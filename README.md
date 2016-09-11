@@ -292,25 +292,57 @@ parte aún no está muy clara. De momento dejo esto como referencia futura, ya l
 cuando sepa exactamente cómo va la cosa.
 
 ```yaml
+# To get started with security, check out the documentation:
+# http://symfony.com/doc/current/book/security.html
 security:
-  [...]
-  encoders:
-    Galvesband\TraUserBundle\Entity\User: bcrypt
-  
-  providers:
-    [...]
-    tra_user_provider:
-      entity:
-        class: GalvesbandTraUserBundle:User
-        property: name
-  
-  firewalls:
-    [...]
-    
-    protected:
-      pattern: ^/
-      http_basic: ~
-      provider: tra_user_provider
+    encoders:
+        Galvesband\TraUserBundle\Entity\User: bcrypt
+
+    # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
+    providers:
+        tra_user_provider:
+            entity:
+                class: GalvesbandTraUserBundle:User
+                property: name
+
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        # Allows anonymous users on login form
+        login_firewall:
+            pattern: ^/admin/login$
+            anonymous: ~
+
+        # Requires full authentication for anything starting with /admin
+        # Uses TraUserBundle's login form
+        admin_firewall:
+            pattern: ^/admin
+            form_login:
+                login_path: /admin/login
+                check_path: /admin/login_check
+                csrf_token_generator: security.csrf.token_manager
+                # Redirects to dashboard on success by default
+                # (If user tried to access another protected url then redirects there)
+                default_target_path: sonata_admin_dashboard
+            logout:
+                invalidate_session: false
+                path: /admin/logout
+                target: /
+            provider: tra_user_provider
+
+        main:
+            anonymous: ~
+
+    access_control:
+        - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin,       roles: ROLE_SONATA_ADMIN }
+
+    role_hierarchy:
+        ROLE_SONATA_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+        ROLE_ADMIN: [ROLE_USER]
 ```
 
 ## Configurando la conexión a la base de datos ##
