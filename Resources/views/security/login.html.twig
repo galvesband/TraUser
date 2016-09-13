@@ -2,7 +2,7 @@
 
 {% block tra_user_stylesheets %}
     <style>
-        form {
+        form#login-form {
             max-width: 330px;
             padding: 15px;
             margin: 0 auto;
@@ -28,22 +28,17 @@
             border-top-left-radius: 0;
             border-top-right-radius: 0;
         }
+
+        div#error-message {
+            max-width: 300px;
+            margin: 10px auto;
+        }
     </style>
 {% endblock %}
 
 {% block tra_user_content %}
 
-    {% if error %}
-        <div class="row">
-            <div class="col-md-6">
-                <div class="alert alert-danger alert-error">
-                    {{ error|trans({}) }}
-                </div>
-            </div>
-        </div>
-    {% endif %}
-
-    <form action="{{ path('login_check') }}" method="post">
+    <form id="login-form" action="{{ path('login_check') }}" method="post">
         <h2>{{ 'Authentication'|trans({}, 'GalvesbandTraUserBundle') }}</h2>
 
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
@@ -56,4 +51,15 @@
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">{{ 'Identify'|trans({}, 'GalvesbandTraUserBundle') }}</button>
     </form>
+
+    {% if error %}
+        <div class="row">
+            <div class="col-md-6">
+                <div id="error-message" class="alert alert-danger alert-error">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
 {% endblock tra_user_content %}
