@@ -1,17 +1,17 @@
 services:
-  admin.user:
+  galvesband.tra.user.admin.user:
     class: Galvesband\TraUserBundle\Admin\UserAdmin
     arguments: [~, Galvesband\TraUserBundle\Entity\User, ~]
     tags:
       - { name: sonata.admin, manager_type: orm, group: Users and Permissions, label: Users }
 
-  admin.group:
+  galvesband.tra.user.admin.group:
     class: Galvesband\TraUserBundle\Admin\GroupAdmin
     arguments: [~, Galvesband\TraUserBundle\Entity\Group, ~]
     tags:
       - { name: sonata.admin, manager_type: orm, group: Users and Permissions, label: Groups }
 
-  admin.role:
+  galvesband.tra.user.admin.role:
     class: Galvesband\TraUserBundle\Admin\RoleAdmin
     arguments: [~, Galvesband\TraUserBundle\Entity\Role, ~]
     tags:

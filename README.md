@@ -282,23 +282,237 @@ galvesband_tra_user:
     resource: "@GalvesbandTraUserBundle/Controller/"
     type:     annotation
     # Usar el prefijo que convenga para el desarrollo y testeo
-    prefix:   /
+    prefix:   /admin
 ```
 
 ### Seguridad: autentificando con TraUserBundle ###
 
-Hay que configurar firewalls y demás mierdas para que use las clases de TraUserBundle. Esta
-parte aún no está muy clara. De momento dejo esto como referencia futura, ya lo actualizaré
-cuando sepa exactamente cómo va la cosa.
+Esta parte es muy importante. Hay que hacer varias cosas, algunas específicas
+para el TraUserBundle y otras que habría que hacerlas para cualquier proyecto
+basado en Sonata.
+
+#### Encoder y proveedor de usuarios ####
+
+Esto es específico de TraUserBundle o de cualquier bundle que proporcione 
+usuarios.
+
+Se trata de establecer el hasher de contraseñas, por un lado. 
+
+```yml
+# security.yml
+security:
+  encoders:
+    Galvesband\TraUserBundle\Entity\User: bcrypt
+    # [...]
+```
+
+Y por el otro, definir un proveedor de usuarios:
+
+```yml
+# security.yml
+security:
+  # [...]
+  providers:
+    tra_user_provider:
+      entity:
+        class: GalvesbandTraUserBundle:User
+        property: name
+  # [...]
+```
+
+#### Firewalls ####
+
+Esto hay que hacerlo en todo proyecto, se trate de TraUserBundle o no. Por supuesto
+varía de un bundle de usuarios a otro y de la naturaleza y diseño del sitio. Aquí
+muestro un buen ejemplo típico.
+
+Por lo general se trata de permitir acceso anónimo a la parte general del sitio
+y requerir autentificación para la parte de administración.
+
+```yml
+# security.yml
+security:
+  # [...]
+  firewalls:
+      # No requiere autentificación para recursos de desarrollo
+      dev:
+          pattern: ^/(_(profiler|wdt)|css|images|js)/
+          security: false
+    
+      # Permite a usuarios no identificados acceso al login
+      login_firewall:
+          pattern: ^/admin/login$
+          anonymous: ~
+    
+      # Zona de administración
+      admin_firewall:
+          # Todo lo que empiece por /admin
+          pattern: ^/admin
+          # Utilizamos el formulario de login de TraUserBundle
+          form_login:
+              # Estas rutas estan definidas en el archivo de enrutado de TraUserBundle
+              login_path: /admin/login
+              check_path: /admin/login_check
+              csrf_token_generator: security.csrf.token_manager
+              # Redirige al dashboard tras identificar con éxito.
+              # Si el usuario acabó en el login redirigido desde una url protegida,
+              # tras el login irá a la url protegida.
+              default_target_path: sonata_admin_dashboard
+          # Indicamos cómo cerrar sesión al componente de seguridad.
+          logout:
+              invalidate_session: false
+              path: /admin/logout
+              target: /
+          # Establecemos nuestro proveedor de usuarios en el firewall
+          provider: tra_user_provider
+    
+      # El sitio principal (todo lo demás)
+      main:
+          anonymous: ~
+  
+  # Aquí definimos los roles necesarios para que se permita el acceso.
+  # Dependiendo del sitio esto puede cambiar, pero por lo general con esto basta.
+  access_control:
+      - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+      - { path: ^/admin,       roles: ROLE_SONATA_ADMIN }
+      
+  # [...]
+```
+
+#### Jerarquía de roles ####
+
+Esta es la parte más peliaguda. Además, puede cambiar dependiendo del esquema de
+seguridad que se quiera implementar en el proyecto Symfony concreto.
+
+Le podemos decir a Sonata qué acciones del CRUD de un determinado modelo o entidad 
+puede o no hacer un usuario a través de los ROLES. Cambiando esto y la configuración 
+de grupos y roles en la base de datos tendremos esquemas de seguridad totalmente 
+diferentes.
+
+Esta parte es una WIP; aún no tengo claro como permitir a un usuario acceder a
+un formulario personalizado de cambio de contraseña, por ejemplo, y cosas así.
+Pero a la hora de requerir roles sobre acciones de un CRUD, la cosa va así:
+
+ - Hay que decirle a Sonata que cambie su manejador de seguridad de `noop`
+   (permite a cualquier usuario hacer cualquier cosa) a otro. En el ejemplo
+   que voy a desarrollar aquí voy a usar roles.
+
+ - Hay que quedarse con el nombre del servicio que proporciona la clase `Admin`
+   a sonata. En GalvesbandTraUserBundle, en el caso de los usuarios, es
+   `galvesband.tra.user.admin.user`. Se pueden ver en el archivo
+   `TraUserBundle/resources/config/services.yml`
+   
+ - Hay que convertir ese nombre de servicio en "prefijo de rol". Siguiendo con 
+   el ejemplo de los usuarios sería `ROLE_GALVESBAND_TRA_USER_ADMIN_USER_`.
+   
+ - A ese "prefijo de rol" se le puede concatenar cualquiera de los siguientes 
+   sufijos para formar el rol necesario para realizar una acción: `CREATE`
+   `EDIT`, `DELETE`, `EXPORT`, `LIST` y `VIEW`.
+
+ - Por último, hay que crear una jerarquía de roles con esto en mente y que unifique
+   los permisos de todos los bundles de Sonata en un esquema de seguridad para toda
+   la aplicación.
+   
+Por ejemplo:
+
+ - En la configuración de SonataAdmin:
+ 
+```yml
+sonata_admin:
+    security:
+        # Usar roles para decidir si un usuario tiene acceso a una determinada acción del CRUD.
+        handler: sonata.admin.security.handler.role
+```
+
+ - En `security.yml` hay que definir una jerarquía de roles deacuerdo a lo mencionado
+   más arriba:
+
+```yml
+security:
+    # [...]
+    
+    # Por conveniencia recogemos aquí los roles de acceso a usuarios, grupos y roles
+    # Y los condensamos en 3 perfiles básicos: USER, ADMIN y ROLESADMIN
+    ROLE_GALVESBAND_TRA_USER_USER:
+        # Un USER podrá listar y ver detalles de todo (usuarios, grupos y roles)
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_LIST
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_VIEW
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_LIST
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_VIEW
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_LIST
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_VIEW
+    ROLE_GALVESBAND_TRA_USER_ADMIN:
+        # Un ADMIN podrá crear, editar y borrar usuarios y grupos, pero no roles
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_CREATE
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_EDIT
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_DELETE
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_EXPORT
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_CREATE
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_EDIT
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_DELETE
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_EXPORT
+    ROLE_GALVESBAND_TRA_USER_ROLESADMIN:
+        # Un ROLESADMIN podrá crear, editar y borrar roles
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_CREATE
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EDIT
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_DELETE
+        - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EXPORT
+
+    # A continuación definimos los auténticos roles que usará la aplicación.
+    # En este esquema de ejemplo tendremos usuarios normales (staff), administradores 
+    # y super-admins. La idea es que haya usuarios que puedan trabajar en la zona de
+    # administración sin tocar las cuentas de otros usuarios (STAFF). Los administradores
+    # serán tipicamente los "dueños" del sitio. Podrán crear, editar y borrar usuarios.
+    # Los super-admins podrán además modificar los roles.
+    
+    # Los que tengan Staff podrán entrar en la zona de administración (ROLE_SONATA_ADMIN)
+    # y podrán listar y ver usuarios, grupos y roles.
+    ROLE_STAFF: [ROLE_SONATA_ADMIN, ROLE_USER, ROLE_GALVESBAND_TRA_USER_USER]
+    # Los administradores podrán crear, editar y borrar usuarios y grupos.
+    ROLE_ADMIN: [ROLE_STAFF, ROLE_GALVESBAND_TRA_USER_ADMIN]
+    # Los super-administradores podrán además crear, editar y borrar roles.
+    ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_GALVESBAND_TRA_USER_ROLESADMIN, ROLE_ALLOWED_TO_SWITCH]
+```
+
+Aún quedan cosas por hacer. Por ejemplo, un ROLE_ADMIN es capaz de crear o eliminar 
+ROLE_SUPER_ADMINs. O asignar roles SUPER_ADMIN a otro usuario.
+
+#### Todo junto ####
+
+A continuación una versión de `security.yml` con todo lo discutido, como referencia.
 
 ```yaml
-# To get started with security, check out the documentation:
-# http://symfony.com/doc/current/book/security.html
 security:
+    role_hierarchy:
+        ROLE_GALVESBAND_TRA_USER_USER:
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_LIST
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_VIEW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_LIST
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_VIEW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_LIST
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_VIEW
+        ROLE_GALVESBAND_TRA_USER_ADMIN:
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_CREATE
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_EDIT
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_DELETE
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_EXPORT
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_CREATE
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_EDIT
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_DELETE
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_EXPORT
+        ROLE_GALVESBAND_TRA_USER_ROLESADMIN:
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_CREATE
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EDIT
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_DELETE
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EXPORT
+
+        ROLE_STAFF: [ROLE_SONATA_ADMIN, ROLE_USER, ROLE_GALVESBAND_TRA_USER_USER]
+        ROLE_ADMIN: [ROLE_STAFF, ROLE_GALVESBAND_TRA_USER_ADMIN]
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
     encoders:
         Galvesband\TraUserBundle\Entity\User: bcrypt
 
-    # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
         tra_user_provider:
             entity:
@@ -306,26 +520,20 @@ security:
                 property: name
 
     firewalls:
-        # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        # Allows anonymous users on login form
         login_firewall:
             pattern: ^/admin/login$
             anonymous: ~
 
-        # Requires full authentication for anything starting with /admin
-        # Uses TraUserBundle's login form
         admin_firewall:
             pattern: ^/admin
             form_login:
                 login_path: /admin/login
                 check_path: /admin/login_check
                 csrf_token_generator: security.csrf.token_manager
-                # Redirects to dashboard on success by default
-                # (If user tried to access another protected url then redirects there)
                 default_target_path: sonata_admin_dashboard
             logout:
                 invalidate_session: false
@@ -340,9 +548,6 @@ security:
         - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin,       roles: ROLE_SONATA_ADMIN }
 
-    role_hierarchy:
-        ROLE_SONATA_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
-        ROLE_ADMIN: [ROLE_USER]
 ```
 
 ## Configurando la conexión a la base de datos ##
