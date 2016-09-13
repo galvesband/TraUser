@@ -1,11 +1,19 @@
 <html>
 <head>
-    <title>{{ 'Authentication'|trans }}</title>
+    <title>{{ 'Authentication'|trans({}, 'GalvesbandTraUserBundle') }}</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+
+    <link rel="stylesheet" href="{{ asset('bundles/sonatacore/vendor/bootstrap/dist/css/bootstrap.min.css') }}">
 </head>
 <body>
-    <div>
+    <div class="container">
         {% block tra_user_content %}
         {% endblock tra_user_content %}
     </div>
+
+    <script src="{{ asset('bundles/sonatacore/vendor/jquery/dist/jquery.min.js') }}"></script>
+    <script src="{{ asset('bundles/sonatacore/vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 </body>
 </html>
