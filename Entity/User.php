@@ -116,7 +116,8 @@ class User implements AdvancedUserInterface, \Serializable {
      * @return string the string representation of the object or null
      * @since 5.1.0
      */
-    public function serialize() {
+    public function serialize()
+    {
         return serialize([
             $this->id,
             $this->name,
@@ -135,7 +136,8 @@ class User implements AdvancedUserInterface, \Serializable {
      * @return void
      * @since 5.1.0
      */
-    public function unserialize($serialized) {
+    public function unserialize($serialized)
+    {
         list(
             $this->id,
             $this->name,
@@ -156,7 +158,8 @@ class User implements AdvancedUserInterface, \Serializable {
      * </code>
      * @return array (string) The user roles
      */
-    public function getRoles() {
+    public function getRoles()
+    {
         $roles = [];
         foreach ($this->getGroups() as $group) {
             foreach ($group->getRoles() as $role) {
@@ -179,7 +182,8 @@ class User implements AdvancedUserInterface, \Serializable {
      *
      * @return string The username
      */
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->name;
     }
 
@@ -189,7 +193,8 @@ class User implements AdvancedUserInterface, \Serializable {
      * This is important if, at any given point, sensitive information like
      * the plain-text password is stored on this object.
      */
-    public function eraseCredentials() {
+    public function eraseCredentials()
+    {
         $this->plainPassword = '';
     }
 
@@ -203,7 +208,8 @@ class User implements AdvancedUserInterface, \Serializable {
      *
      * @see AccountExpiredException
      */
-    public function isAccountNonExpired() {
+    public function isAccountNonExpired()
+    {
         return true;
     }
 
@@ -217,7 +223,8 @@ class User implements AdvancedUserInterface, \Serializable {
      *
      * @see LockedException
      */
-    public function isAccountNonLocked() {
+    public function isAccountNonLocked()
+    {
         return true;
     }
 
@@ -231,7 +238,8 @@ class User implements AdvancedUserInterface, \Serializable {
      *
      * @see CredentialsExpiredException
      */
-    public function isCredentialsNonExpired() {
+    public function isCredentialsNonExpired()
+    {
         return true;
     }
 
@@ -245,7 +253,8 @@ class User implements AdvancedUserInterface, \Serializable {
      *
      * @see DisabledException
      */
-    public function isEnabled() {
+    public function isEnabled()
+    {
         return $this->isActive;
     }
 
@@ -257,7 +266,8 @@ class User implements AdvancedUserInterface, \Serializable {
      *
      * @return string The password
      */
-    public function getPassword() {
+    public function getPassword()
+    {
         return $this->password;
     }
 
@@ -268,7 +278,8 @@ class User implements AdvancedUserInterface, \Serializable {
      *
      * @return string|null The salt
      */
-    public function getSalt() {
+    public function getSalt()
+    {
         return $this->salt;
     }
 
@@ -443,5 +454,15 @@ class User implements AdvancedUserInterface, \Serializable {
     public function getGroups()
     {
         return $this->groups;
+    }
+
+    public function hasRole($role)
+    {
+        foreach ($this->getRoles() as $myRole) {
+            if ($role === $myRole)
+                return true;
+        }
+
+        return false;
     }
 }

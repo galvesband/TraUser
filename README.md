@@ -475,7 +475,53 @@ security:
 ```
 
 Aún quedan cosas por hacer. Por ejemplo, un ROLE_ADMIN es capaz de crear o eliminar 
-ROLE_SUPER_ADMINs. O asignar roles SUPER_ADMIN a otro usuario.
+ROLE_SUPER_ADMINs. O asignar roles SUPER_ADMIN a otro usuario. Para paliar esto 
+estoy escribiendo mis propios manejadores de seguridad de Sonata. Todo lo de a
+continuación es un WIP.
+
+Para usarlos hay que poner esto en la configuración de sonata_admin:
+
+```yml
+sonata_admin:
+  # [...]
+  security:
+    handler: galvesband.tra.user.security.handler.per_model_handler
+```
+
+Ese handler representa un servicio proporcionado por GalvesbandTraUserBundle.
+Es muy simple: aplica un `security handler` u otro dependiendo de la clase
+que se esté administrando. Si no tiene configuración para la clase sobre la
+que se le pide permisos actua como el clásico manejador de seguridad por roles.
+
+Lo que queda para que funcione es darle la configuración de manejadores de 
+seguridad que tiene que usar para según qué clases. En principio la definición
+del servicio le configura como posibilidades el manejador _noop_, el de
+_roles_ y _user_ (uno propio que estoy desarrollando). Hay que añadir al
+`config.yml` algo como esto:
+
+```yml
+# config.yml
+parameters:
+    # [...]
+    galvesband.tra.user.admin.security.handler_map:
+      # Este es el único necesario porque por defecto usa role.
+      # Es probable que en el futuro haya más handlers de seguridad
+      # personalizados para grupos y roles.
+      'Galvesband\TraUserBundle\Entity\User': user
+      'Galvesband\TraUserBundle\Admin\UserAdmin': role
+      'Galvesband\TraUserBundle\Entity\Group': role
+      'Galvesband\TraUserBundle\Entity\Role': role
+      'Galvesband\TraUserBundle\Admin\RoleAdmin': role
+```
+
+La idea que intentan implementar esto es que podamos aplicar un handler de 
+seguridad por modelo o clase de administración. Y para TraUserBundle,
+queremos que un usuario que no sea ROLE_SUPER_ADMIN NO pueda modificar o crear
+usuarios ROLE_SUPER_ADMIN. A su vez será necesario que no pueda modificar o
+crear un grupo que tenga ROLE_SUPER_ADMIN. Y solo un ROLE_SUPER_ADMIN debe poder
+editar la tabla de roles.
+
+Aún estoy en ello.
 
 #### Todo junto ####
 

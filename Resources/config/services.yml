@@ -1,29 +1,52 @@
 services:
+  # User administration class
   galvesband.tra.user.admin.user:
     class: Galvesband\TraUserBundle\Admin\UserAdmin
-    arguments: [~, Galvesband\TraUserBundle\Entity\User, ~]
+    arguments: [~, Galvesband\TraUserBundle\Entity\User, GalvesbandTraUserBundle:UserCRUD]
     tags:
       - { name: sonata.admin, manager_type: orm, group: Users and Permissions, label: Users }
 
+  # Group administration class
   galvesband.tra.user.admin.group:
     class: Galvesband\TraUserBundle\Admin\GroupAdmin
     arguments: [~, Galvesband\TraUserBundle\Entity\Group, ~]
     tags:
       - { name: sonata.admin, manager_type: orm, group: Users and Permissions, label: Groups }
 
+  # Role administration class
   galvesband.tra.user.admin.role:
     class: Galvesband\TraUserBundle\Admin\RoleAdmin
     arguments: [~, Galvesband\TraUserBundle\Entity\Role, ~]
     tags:
       - { name: sonata.admin, manager_type: orm, group: Users and Permissions, label: Roles }
 
-  tra_user.manager:
+  # User Manager - Hash the user password when modified before persisting or updating him
+  galvesband.tra.user.manager:
     class: Galvesband\TraUserBundle\DependencyInjection\UserManager
     arguments:
       - "@security.encoder_factory"
     tags:
       - { name: doctrine.event_listener, event: prePersist }
       - { name: doctrine.event_listener, event: preUpdate }
+
+  galvesband.tra.user.security.handler.user_security_handler:
+    class: Galvesband\TraUserBundle\Security\Handler\UserSecurityHandler
+    arguments:
+      authChecker: "@security.authorization_checker"
+      superRoles: [ ROLE_SECURITY_HANDLER ]
+      tokenStorage: "@security.token_storage"
+
+  # Handles security in SonataAdmin
+  galvesband.tra.user.security.handler.per_model_handler:
+    class: Galvesband\TraUserBundle\Security\Handler\PerModelSecurityHandler
+    arguments:
+      authChecker: "@security.authorization_checker"
+      superRoles: [ ROLE_SUPER_ADMIN ]
+      handlers:
+        role: '@sonata.admin.security.handler.role'
+        noop: '@sonata.admin.security.handler.noop'
+        user: '@galvesband.tra.user.security.handler.user_security_handler'
+      classHandlerMap: '%galvesband.tra.user.admin.security.handler_map%'
 
 #    galvesband_tra_user.example:
 #        class: Galvesband\TraUserBundle\Example
