@@ -18,17 +18,18 @@
    - Lanzar Unauthorized cuando un nuevo usuario, grupo o rol
      es ROLE_SUPER_ADMIN si usuario logeado no es ROLE_SUPER_ADMIN.
      
- - No exportar la contraseña hasheada y el salt en EXPORT.
+ - ~~No exportar la contraseña hasheada y el salt en EXPORT~~.
    
 ## Integración con Sonata ##
 
  - Bloque usuario arriba a la derecha
    - ~~Integrar con Sonata~~
+   - ~~Plantilla decente~~
    - Acceso a perfil
    - Acceso a Cambio de contraseña
-   - Logout
+   - ~~Logout~~
      
- - Crear vistas 'show' para Usuarios, Grupos y Roles.
+ - ~~Crear vistas 'show' para Usuarios, Grupos y Roles~~.
 
 ## Acciones ##
 

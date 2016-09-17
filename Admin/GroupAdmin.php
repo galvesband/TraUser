@@ -6,6 +6,7 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Show\ShowMapper;
 
 class GroupAdmin extends AbstractAdmin {
 
@@ -43,6 +44,23 @@ class GroupAdmin extends AbstractAdmin {
             ->end();
     }
 
+    protected function configureShowFields(ShowMapper $showMapper)
+    {
+        $showMapper
+            ->add('name')
+            ->add('description')
+            ->add('users', null, [
+                'route' => [
+                    'name' => 'show'
+                ]
+            ])
+            ->add('roles', null, [
+                'route' => [
+                    'name' => 'show'
+                ]
+            ]);
+    }
+
     protected function configureDatagridFilters(DatagridMapper $datagridMapper) {
         $datagridMapper
             ->add('name')
@@ -52,9 +70,17 @@ class GroupAdmin extends AbstractAdmin {
 
     protected function configureListFields(ListMapper $listMapper) {
         $listMapper
-            ->addIdentifier('name')
+            ->addIdentifier('name', null, [
+                'route' => [
+                    'name' => 'show'
+                ]
+            ])
             ->add('description')
-            ->add('roles')
+            ->add('roles', null, [
+                'route' => [
+                    'name' => 'show'
+                ]
+            ])
             ->add('_action', 'actions', [
                 'actions' => [
                     'edit' => [],

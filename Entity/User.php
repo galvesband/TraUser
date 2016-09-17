@@ -465,4 +465,9 @@ class User implements AdvancedUserInterface, \Serializable {
 
         return false;
     }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }

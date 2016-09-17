@@ -7,6 +7,7 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Show\ShowMapper;
 
 class UserAdmin extends AbstractAdmin {
 
@@ -33,14 +34,16 @@ class UserAdmin extends AbstractAdmin {
         }
 
         $formMapper
-            ->with('Basic Information', ['class' => 'col-md-6'])
+            ->with('Basic Information', [
+                'class' => 'col-md-6',
+            ])
                 ->add('name', 'text')
                 ->add('email', 'text')
                 ->add('isActive')
                 ->add('groups', 'sonata_type_model', [
                     'class' => 'Galvesband\TraUserBundle\Entity\Group',
                     'multiple' => true,
-                    'query' => $query
+                    'query' => $query,
                 ], [
                     'placeholder' => 'No group selected'
                 ])
@@ -54,21 +57,55 @@ class UserAdmin extends AbstractAdmin {
             ->end();
     }
 
+    protected function configureShowFields(ShowMapper $showMapper)
+    {
+        $showMapper
+            ->add('name')
+            ->add('email')
+            ->add('is_active', 'boolean')
+            ->add('groups', null, [
+                'route' => [
+                    'name' => 'show'
+                ]
+            ]);
+    }
+
+    public function getExportFields()
+    {
+        $fields = parent::getExportFields();
+        $index = array_search('password', $fields);
+        unset($fields[$index]);
+        $index = array_search('salt', $fields);
+        unset($fields[$index]);
+
+        return array_values($fields);
+    }
+
+
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
             ->add('name')
             ->add('email')
-            ->add('isActive');
+            ->add('isActive')
+            ->add('groups');
     }
 
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->addIdentifier('name')
+            ->addIdentifier('name', null, [
+                'route' => [
+                    'name' => 'show'
+                ]
+            ])
             ->add('email')
             ->add('isActive')
-            ->add('groups')
+            ->add('groups', null, [
+                'route' => [
+                    'name' => 'show'
+                ]
+            ])
             ->add('_action', 'actions', [
                 'actions' => [
                     'edit' => [],

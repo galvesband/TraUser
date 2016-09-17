@@ -19,12 +19,18 @@ class UserSecurityHandler extends RoleSecurityHandler
 
     public function isGranted(AdminInterface $admin, $attributes, $object = null)
     {
-        if ($object instanceof User) {
-            $user = $this->tokenStorage->getToken()->getUser();
-            $isSuperAdmin = $user->hasRole('ROLE_SUPER_ADMIN');
+        $user = $this->tokenStorage->getToken()->getUser();
+        $userIsSuperAdmin = $user->hasRole('ROLE_SUPER_ADMIN');
+        $objectIsSuperAdmin = ($object instanceof User && $object->hasRole('ROLE_SUPER_ADMIN'));
 
-            if (!$isSuperAdmin and $object->hasRole('ROLE_SUPER_ADMIN')) {
-                return false;
+        if (!$userIsSuperAdmin and $objectIsSuperAdmin) {
+            switch ($attributes) {
+                case 'VIEW':
+                case 'SHOW':
+                    return true;
+                    break;
+                default:
+                    return false;
             }
         }
 

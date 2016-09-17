@@ -415,7 +415,7 @@ Pero a la hora de requerir roles sobre acciones de un CRUD, la cosa va así:
    
  - A ese "prefijo de rol" se le puede concatenar cualquiera de los siguientes 
    sufijos para formar el rol necesario para realizar una acción: `CREATE`
-   `EDIT`, `DELETE`, `EXPORT`, `LIST` y `VIEW`.
+   `EDIT`, `DELETE`, `EXPORT`, `LIST`, `SHOW` y `VIEW`.
 
  - Por último, hay que crear una jerarquía de roles con esto en mente y que unifique
    los permisos de todos los bundles de Sonata en un esquema de seguridad para toda
@@ -441,45 +441,51 @@ security:
     
     # Por conveniencia recogemos aquí los roles de acceso a usuarios, grupos y roles
     # Y los condensamos en 3 perfiles básicos: USER, ADMIN y ROLESADMIN
-    ROLE_GALVESBAND_TRA_USER_USER:
-        # Un USER podrá listar y ver detalles de todo (usuarios, grupos y roles)
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_LIST
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_VIEW
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_LIST
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_VIEW
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_LIST
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_VIEW
-    ROLE_GALVESBAND_TRA_USER_ADMIN:
-        # Un ADMIN podrá crear, editar y borrar usuarios y grupos, pero no roles
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_CREATE
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_EDIT
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_DELETE
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_EXPORT
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_CREATE
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_EDIT
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_DELETE
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_EXPORT
-    ROLE_GALVESBAND_TRA_USER_ROLESADMIN:
-        # Un ROLESADMIN podrá crear, editar y borrar roles
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_CREATE
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EDIT
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_DELETE
-        - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EXPORT
+    role_hierarchy:
+        # Por conveniencia recogemos aquí los roles de acceso a usuarios, grupos y roles
+        # Y los condensamos en 3 perfiles básicos: USER, ADMIN y ROLESADMIN
+        ROLE_GALVESBAND_TRA_USER_USER:
+            # Un USER podrá listar y ver detalles de everything (usuarios, grupos y roles)
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_LIST
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_VIEW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_SHOW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_EXPORT
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_LIST
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_VIEW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_SHOW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_EXPORT
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_LIST
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_VIEW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_SHOW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EXPORT
+        ROLE_GALVESBAND_TRA_USER_ADMIN:
+            # Un ADMIN podrá crear, editar y borrar usuarios y grupos, pero no roles
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_CREATE
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_EDIT
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_DELETE
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_CREATE
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_EDIT
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_DELETE
+        ROLE_GALVESBAND_TRA_USER_ROLESADMIN:
+            # Un ROLESADMIN podrá crear, editar y borrar roles
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_CREATE
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EDIT
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_DELETE
 
-    # A continuación definimos los auténticos roles que usará la aplicación.
-    # En este esquema de ejemplo tendremos usuarios normales (staff), administradores 
-    # y super-admins. La idea es que haya usuarios que puedan trabajar en la zona de
-    # administración sin tocar las cuentas de otros usuarios (STAFF). Los administradores
-    # serán tipicamente los "dueños" del sitio. Podrán crear, editar y borrar usuarios.
-    # Los super-admins podrán además modificar los roles.
-    
-    # Los que tengan Staff podrán entrar en la zona de administración (ROLE_SONATA_ADMIN)
-    # y podrán listar y ver usuarios, grupos y roles.
-    ROLE_STAFF: [ROLE_SONATA_ADMIN, ROLE_USER, ROLE_GALVESBAND_TRA_USER_USER]
-    # Los administradores podrán crear, editar y borrar usuarios y grupos.
-    ROLE_ADMIN: [ROLE_STAFF, ROLE_GALVESBAND_TRA_USER_ADMIN]
-    # Los super-administradores podrán además crear, editar y borrar roles.
-    ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_GALVESBAND_TRA_USER_ROLESADMIN, ROLE_ALLOWED_TO_SWITCH]
+        # A continuación definimos los auténticos roles que usará la aplicación.
+        # En este esquema de ejemplo tendremos usuarios normales (staff), administradores
+        # y super-admins. La idea es que haya usuarios que puedan trabajar en la zona de
+        # administración sin tocar las cuentas de otros usuarios (STAFF). Los administradores
+        # serán tipicamente los "dueños" del sitio. Podrán crear, editar y borrar usuarios.
+        # Los super-admins podrán además modificar los roles.
+
+        # Los que tengan Staff podrán entrar en la zona de administración (ROLE_SONATA_ADMIN)
+        # y podrán listar y ver usuarios, grupos y roles.
+        ROLE_STAFF: [ROLE_SONATA_ADMIN, ROLE_USER, ROLE_GALVESBAND_TRA_USER_USER]
+        # Los administradores podrán crear, editar y borrar usuarios y grupos.
+        ROLE_ADMIN: [ROLE_STAFF, ROLE_GALVESBAND_TRA_USER_ADMIN]
+        # Los super-administradores podrán además crear, editar y borrar roles.
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_GALVESBAND_TRA_USER_ROLESADMIN, ROLE_ALLOWED_TO_SWITCH]
 ```
 
 Aún quedan cosas por hacer. Por ejemplo, un ROLE_ADMIN es capaz de crear o eliminar 
@@ -504,7 +510,7 @@ que se le pide permisos actua como el clásico manejador de seguridad por roles.
 Lo que queda para que funcione es darle la configuración de manejadores de 
 seguridad que tiene que usar para según qué clases. En principio la definición
 del servicio le configura como posibilidades el manejador _noop_, el de
-_roles_ y _user_ (uno propio que estoy desarrollando). Hay que añadir al
+_roles_ y dos nuevos: _user_ y _group_ (propios). Hay que añadir al
 `config.yml` algo como esto:
 
 ```yml
@@ -512,14 +518,15 @@ _roles_ y _user_ (uno propio que estoy desarrollando). Hay que añadir al
 parameters:
     # [...]
     galvesband.tra.user.admin.security.handler_map:
-      # Este es el único necesario porque por defecto usa role.
-      # Es probable que en el futuro haya más handlers de seguridad
-      # personalizados para grupos y roles.
-      'Galvesband\TraUserBundle\Entity\User': user
-      'Galvesband\TraUserBundle\Admin\UserAdmin': role
-      'Galvesband\TraUserBundle\Entity\Group': role
-      'Galvesband\TraUserBundle\Entity\Role': role
-      'Galvesband\TraUserBundle\Admin\RoleAdmin': role
+        # Este es el único necesario porque por defecto usa role.
+        # Es probable que en el futuro haya más handlers de seguridad
+        # personalizados para grupos y roles.
+        'Galvesband\TraUserBundle\Entity\User': user
+        'Galvesband\TraUserBundle\Admin\UserAdmin': user
+        'Galvesband\TraUserBundle\Entity\Group': group
+        'Galvesband\TraUserBundle\Admin\GroupAdmin': group
+        'Galvesband\TraUserBundle\Entity\Role': role
+        'Galvesband\TraUserBundle\Admin\RoleAdmin': role
 ```
 
 La idea que intentan implementar esto es que podamos aplicar un handler de 
@@ -529,7 +536,7 @@ usuarios ROLE_SUPER_ADMIN. A su vez será necesario que no pueda modificar o
 crear un grupo que tenga ROLE_SUPER_ADMIN. Y solo un ROLE_SUPER_ADMIN debe poder
 editar la tabla de roles.
 
-Aún estoy en ello.
+Aún estoy en ello. 
 
 #### Todo junto ####
 
@@ -538,31 +545,50 @@ A continuación una versión de `security.yml` con todo lo discutido, como refer
 ```yaml
 security:
     role_hierarchy:
+        # Por conveniencia recogemos aquí los roles de acceso a usuarios, grupos y roles
+        # Y los condensamos en 3 perfiles básicos: USER, ADMIN y ROLESADMIN
         ROLE_GALVESBAND_TRA_USER_USER:
+            # Un USER podrá listar y ver detalles de everything (usuarios, grupos y roles)
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_LIST
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_VIEW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_SHOW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_EXPORT
             - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_LIST
             - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_VIEW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_SHOW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_EXPORT
             - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_LIST
             - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_VIEW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_SHOW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EXPORT
         ROLE_GALVESBAND_TRA_USER_ADMIN:
+            # Un ADMIN podrá crear, editar y borrar usuarios y grupos, pero no roles
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_CREATE
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_EDIT
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_DELETE
-            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_EXPORT
             - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_CREATE
             - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_EDIT
             - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_DELETE
-            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_EXPORT
         ROLE_GALVESBAND_TRA_USER_ROLESADMIN:
+            # Un ROLESADMIN podrá crear, editar y borrar roles
             - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_CREATE
             - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EDIT
             - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_DELETE
-            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EXPORT
 
+        # A continuación definimos los auténticos roles que usará la aplicación.
+        # En este esquema de ejemplo tendremos usuarios normales (staff), administradores
+        # y super-admins. La idea es que haya usuarios que puedan trabajar en la zona de
+        # administración sin tocar las cuentas de otros usuarios (STAFF). Los administradores
+        # serán tipicamente los "dueños" del sitio. Podrán crear, editar y borrar usuarios.
+        # Los super-admins podrán además modificar los roles.
+
+        # Los que tengan Staff podrán entrar en la zona de administración (ROLE_SONATA_ADMIN)
+        # y podrán listar y ver usuarios, grupos y roles.
         ROLE_STAFF: [ROLE_SONATA_ADMIN, ROLE_USER, ROLE_GALVESBAND_TRA_USER_USER]
+        # Los administradores podrán crear, editar y borrar usuarios y grupos.
         ROLE_ADMIN: [ROLE_STAFF, ROLE_GALVESBAND_TRA_USER_ADMIN]
-        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+        # Los super-administradores podrán además crear, editar y borrar roles.
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_GALVESBAND_TRA_USER_ROLESADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     encoders:
         Galvesband\TraUserBundle\Entity\User: bcrypt
