@@ -176,6 +176,23 @@ class Group {
         return $this->roles;
     }
 
+    /**
+     * True if this group has assigned a given role name.
+     *
+     * @param $roleName string For example, 'ROLE_SUPER_ADMIN'
+     * @return bool
+     */
+    public function hasRole($roleName)
+    {
+        foreach ($this->getRoles() as $role) {
+            if ($role->getRole() === $roleName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function __toString() {
         return $this->getName();
     }

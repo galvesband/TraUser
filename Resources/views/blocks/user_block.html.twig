@@ -1,0 +1,27 @@
+{% if app.user %}
+    <li role="presentation" class="dropdown-header">
+        <i class="fa fa-user"></i>
+        {{ 'You are logged in as %name%'|trans({'%name%' : app.user.name}, "GalvesbandTraUserBundle") }}
+    </li>
+    <li role="presentation">
+        <a role="menuitem" tabindex="-1" href="{{ path('galvesband_trauser_default_index') }}">
+            {{ 'See your profile'|trans({}, "GalvesbandTraUserBundle") }}
+        </a>
+    </li>
+    <li role="presentation">
+        <a role="menuitem" tabindex="-1" href="{{ path('galvesband_trauser_default_index') }}">
+            {{ 'Change password' | trans({}, "GalvesbandTraUserBundle") }}
+        </a>
+    </li>
+    <li role="presentation">
+        <a role="menuitem" tabindex="-1" href="{{ path('logout') }}">
+            {{ 'Logout' | trans({}, "GalvesbandTraUserBundle") }}
+        </a>
+    </li>
+{% else %}
+    <li role="presentation">
+        <a role="menuitem" tabindex="-1" href="{{ path('login') }}">
+            {{ 'Identify'|trans({}, 'GalvesbandTraUserBundle') }}
+        </a>
+    </li>
+{% endif %}

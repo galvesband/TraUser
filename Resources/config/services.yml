@@ -29,6 +29,7 @@ services:
       - { name: doctrine.event_listener, event: prePersist }
       - { name: doctrine.event_listener, event: preUpdate }
 
+  # User security handler - Forbids actions over users with ROLE_SUPER_ADMIN to anyone not being ROLE_SUPER_ADMIN
   galvesband.tra.user.security.handler.user_security_handler:
     class: Galvesband\TraUserBundle\Security\Handler\UserSecurityHandler
     arguments:
@@ -36,18 +37,26 @@ services:
       superRoles: [ ROLE_SECURITY_HANDLER ]
       tokenStorage: "@security.token_storage"
 
+  # Group security handler - Forbids actions over groups with ROLE_SUPER_ADMIN to anyone not being ROLE_SUPER_ADMIN
+  galvesband.tra.user.security.handler.group_security_handler:
+      class: Galvesband\TraUserBundle\Security\Handler\GroupSecurityHandler
+      arguments:
+        authChecker: "@security.authorization_checker"
+        superRoles: [ ROLE_SECURITY_HANDLER ]
+        tokenStorage: "@security.token_storage"
+
   # Handles security in SonataAdmin
+  # Relies on other security handlers based on an instanceof check
   galvesband.tra.user.security.handler.per_model_handler:
     class: Galvesband\TraUserBundle\Security\Handler\PerModelSecurityHandler
     arguments:
       authChecker: "@security.authorization_checker"
       superRoles: [ ROLE_SUPER_ADMIN ]
+      # Allowed handlers
       handlers:
         role: '@sonata.admin.security.handler.role'
         noop: '@sonata.admin.security.handler.noop'
         user: '@galvesband.tra.user.security.handler.user_security_handler'
+        group: '@galvesband.tra.user.security.handler.group_security_handler'
+      # Relation between classes and security handlers to be applied to
       classHandlerMap: '%galvesband.tra.user.admin.security.handler_map%'
-
-#    galvesband_tra_user.example:
-#        class: Galvesband\TraUserBundle\Example
-#        arguments: ["@service_id", "plain_value", %parameter%]

@@ -167,6 +167,14 @@ sonata_block:
   blocks:
     sonata.admin.block.admin_list:
       contexts: [admin]
+      
+    sonata.block.service.text:
+    #sonata.block.service.rss:
+      
+    # Some specific block from the SonataMediaBundle
+    #sonata.media.block.media:
+    #sonata.media.block.gallery:
+    #sonata.media.block.feature_media:
 ```
 
 #### Activando Symfony translator ####

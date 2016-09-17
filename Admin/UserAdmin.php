@@ -10,12 +10,6 @@ use Sonata\AdminBundle\Form\FormMapper;
 
 class UserAdmin extends AbstractAdmin {
 
-    // TODO: Crear un SecurityHandler nuevo que delegue en otro security handler según modelo, y si no tiene un
-    // TODO  security handler para ese modelo que delegue en uno por defecto.
-
-    // TODO: Crear un SecurityHandler para usuarios que tenga en cuenta la acción a realizar y el rol actual del usuario
-    // TODO   Si usuario logeao no es ROLE_SUPER_ADMIN y el usuario sí lo es hay que denegar EDIT y DELETE... y BATCH si existe.
-
     protected $translationDomain = 'GalvesbandTraUserBundle';
 
     protected function configureFormFields(FormMapper $formMapper)
@@ -25,8 +19,7 @@ class UserAdmin extends AbstractAdmin {
         $currentUser = $this->getConfigurationPool()->getContainer()->get('security.token_storage')
             ->getToken()->getUser();
 
-        if (!$currentUser->hasRole('ROLE_SUPER_ADMIN'))
-        {
+        if (!$currentUser->hasRole('ROLE_SUPER_ADMIN')) {
             /* This query is used to populate the groups field. We don't want groups
                with ROLE_SUPER_ADMIN listed in there if the user is not ROLE_SUPER_ADMIN */
             $query = $repository->createQueryBuilder('g')
