@@ -89,7 +89,16 @@ class GroupAdmin extends AbstractAdmin {
             ]);
     }
 
-    public function toString($object) {
+    public function getBatchActions()
+    {
+        $actions = parent::getBatchActions();
+        unset($actions['delete']);
+
+        return $actions;
+    }
+
+    public function toString($object)
+    {
         return $object instanceof \Galvesband\TraUserBundle\Entity\Group
             ? $object->getName()
             : 'Group';

@@ -114,6 +114,14 @@ class UserAdmin extends AbstractAdmin {
             ]);
     }
 
+    public function getBatchActions()
+    {
+        $actions = parent::getBatchActions();
+        unset($actions['delete']);
+
+        return $actions;
+    }
+
     /**
      * Convierte el objeto de entrada en su representación textual
      * @param \Galvesband\TraUserBundle\Entity\User|mixed $object

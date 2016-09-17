@@ -2,15 +2,11 @@
 
 ## Seguridad ##
 
- - ~~Usuarios que no sean ROLE_SUPER_ADMIN no deben poder
-           editar o borrar usuarios que sean ROLE_SUPER_ADMIN~~
+ - ~~Usuarios que no sean ROLE_SUPER_ADMIN no deben poder editar o borrar usuarios que sean ROLE_SUPER_ADMIN~~
  
- - ~~Usuarios que no sean ROLE_SUPER_ADMIN no deben poder 
-           editar o borrar grupos que sean ROLE_SUPER_ADMIN.~~
+ - ~~Usuarios que no sean ROLE_SUPER_ADMIN no deben poder editar o borrar grupos que sean ROLE_SUPER_ADMIN.~~
 
- - Usuarios que no sean ROLE_SUPER_ADMIN no deben poder borrar 
-   usuarios o grupos que sean ROLE_SUPER_ADMIN a través de 
-   acciones BATCH.
+ - ~~Desactivar BATCH en usuarios y grupos para evitar permitir borrar objetos ROLE_SUPER_ADMIN~~
    
  - Usuarios que no sean ROLE_SUPER_ADMIN no deben poder
    crear usuarios o grupos con rol ROLE_SUPER_ADMIN.
