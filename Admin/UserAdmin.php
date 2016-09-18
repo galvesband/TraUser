@@ -2,7 +2,6 @@
 
 namespace Galvesband\TraUserBundle\Admin;
 
-use Galvesband\TraUserBundle\Entity\User;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -50,9 +49,18 @@ class UserAdmin extends AbstractAdmin {
             ->end()
 
             ->with('Authentication', ['class' => 'col-md-6'])
-                ->add('plainPassword', 'password', [
-                    'required' => false,
-                    'label' => 'Password',
+                ->add('plainPassword', 'repeated', [
+                    'type' => 'password',
+                    'translation_domain' => 'GalvesbandTraUserBundle',
+                    'first_options' => [
+                        'label' => 'Password',
+                    ],
+                    'second_options' => [
+                        'label' => 'Confirmation',
+                    ],
+                    'invalid_message' => 'The password and its confirmation do not match.',
+                    // Required only if we are creating a new user
+                    'required' => !$this->getRequest()->get($this->getIdParameter()),
                 ])
             ->end();
     }

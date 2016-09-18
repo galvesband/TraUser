@@ -176,5 +176,7 @@ class SecurityController extends Controller {
                 'user_name' => $user->getName()
             ]);
         }
+
+        return $this->createNotFoundException('Parameters missing');
     }
 }

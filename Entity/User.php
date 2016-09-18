@@ -71,12 +71,14 @@ class User implements AdvancedUserInterface, \Serializable {
      *
      * @var string
      * @ORM\Column(type="string", length=64)
+     * @Assert\NotBlank(message="The password can not be empty.")
      */
     private $password;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=128)
+     * @Assert\NotBlank()
      */
     private $salt;
 
@@ -168,6 +170,7 @@ class User implements AdvancedUserInterface, \Serializable {
     {
         $roles = [];
         foreach ($this->getGroups() as $group) {
+            /** @var $role Role */
             foreach ($group->getRoles() as $role) {
                 if (!isset($roles[$role->getRole()])) {
                     $roles[$role->getRole()] = $role->getRole();

@@ -149,6 +149,14 @@ el siguiente enlace:</target>
                 <source>Go to the Authentication page</source>
                 <target>Ir a la página de Identificación</target>
             </trans-unit>
+            <trans-unit id="Confirmation">
+                <source>Confirmation</source>
+                <target>Confirmación</target>
+            </trans-unit>
+            <trans-unit id="The password and its confirmation do not match.">
+                <source>The password and its confirmation do not match.</source>
+                <target>La contraseña y su confirmación no coinciden.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
