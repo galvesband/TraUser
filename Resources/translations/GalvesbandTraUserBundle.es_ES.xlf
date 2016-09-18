@@ -127,8 +127,27 @@
             <trans-unit id="email_password_forgot_instructions">
                 <source>email_password_forgot_instructions</source>
                 <target>Una petición de recuperación de contraseña ha sido recibida para el usuario
-                enlazado a esta cuenta de correo electrónico. Para continuar con el proceso use
-                el siguiente enlace:</target>
+enlazado a esta cuenta de correo electrónico. Para continuar con el proceso use
+el siguiente enlace:</target>
+            </trans-unit>
+            <trans-unit id="Your new password">
+                <source>Your new password</source>
+                <target>Tu nueva contraseña</target>
+            </trans-unit>
+            <trans-unit id="recovered_password_info">
+                <source>recovered_password_info</source>
+                <target>
+                    Este es un enlace de un único uso que permite cambiar la contraseña del usuario %name%.
+                    La contraseña del usuario ha sido cambiada por una generada aleatoriamente.
+                </target>
+            </trans-unit>
+            <trans-unit id="This is your new password: '%new_password%'. Use it in the authentification form to log in and set your own.">
+                <source>This is your new password: '%new_password%'. Use it in the authentification form to log in and set your own.</source>
+                <target>Esta es tu nueva contraseña: '%new_password%'. Usala en el formulario de identificación para entrar y establacer la tuya propia.</target>
+            </trans-unit>
+            <trans-unit id="Go to the Authentication page">
+                <source>Go to the Authentication page</source>
+                <target>Ir a la página de Identificación</target>
             </trans-unit>
         </body>
     </file>
