@@ -630,6 +630,18 @@ security:
 
 ```
 
+#### Bloque de ussuario logeado ####
+
+Esto es para que cuando se identifique alguien en la parte de administración, arriba a la derecha
+se muestre algún enlace interesante para el usuario como acceso al propio perfil o cerrar sesión.
+
+```yml
+# config.yml
+sonata_admin:
+    templates:
+        user_block: GalvesbandTraUserBundle:blocks:user_block.html.twig
+```
+
 #### Correo ####
 
 TraUserBundle puede enviar correos para permitir a un usuario que ha
