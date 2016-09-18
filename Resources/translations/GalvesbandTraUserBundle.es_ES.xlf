@@ -143,7 +143,7 @@ el siguiente enlace:</target>
             </trans-unit>
             <trans-unit id="This is your new password: '%new_password%'. Use it in the authentification form to log in and set your own.">
                 <source>This is your new password: '%new_password%'. Use it in the authentification form to log in and set your own.</source>
-                <target>Esta es tu nueva contraseña: '%new_password%'. Usala en el formulario de identificación para entrar y establacer la tuya propia.</target>
+                <target>Esta es tu nueva contraseña: '%new_password%'. Úsala en el formulario de identificación para entrar y establacer la tuya propia.</target>
             </trans-unit>
             <trans-unit id="Go to the Authentication page">
                 <source>Go to the Authentication page</source>

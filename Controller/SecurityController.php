@@ -141,13 +141,13 @@ class SecurityController extends Controller {
                 ->innerJoin('u.token', 't')
                 ->where('u.name = :user_name')
                 ->andWhere('u.isActive = 1')
-                //->andWhere('t.createdAt > :from_datetime')
-                //->andWhere('t.createdAt < :to_datetime')
+                ->andWhere('t.createdAt > :from_datetime')
+                ->andWhere('t.createdAt < :to_datetime')
                 ->andWhere('t.token = :token')
                 ->setParameters([
                     'user_name' => $request->get('name'),
-                    //'from_datetime' => $fromDateTime,
-                    //'to_datetime' => $toDateTime,
+                    'from_datetime' => $fromDateTime,
+                    'to_datetime' => $toDateTime,
                     'token' => $request->get('token')
                 ])
                 ->getQuery()
@@ -162,6 +162,7 @@ class SecurityController extends Controller {
             // ok, we have an user with an active token
             // First invalidate the token by just removing it
             $em->remove($user->getToken());
+            $user->setToken(null);
 
             // Now we need to generate a random password of about 10 characters
             $newPassword = substr(bin2hex(random_bytes(32)), 0, 10);
@@ -170,7 +171,7 @@ class SecurityController extends Controller {
             // Save changes
             $em->flush();
 
-            return $this->renderView('@GalvesbandTraUser/security/recover_password.html.twig', [
+            return $this->render('@GalvesbandTraUser/security/recover_password.html.twig', [
                 'new_password' => $newPassword,
                 'user_name' => $user->getName()
             ]);

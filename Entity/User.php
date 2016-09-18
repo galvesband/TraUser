@@ -399,6 +399,7 @@ class User implements AdvancedUserInterface, \Serializable {
 
         // Changing some mapped values so preUpdate will get called.
         $this->refreshSalt();
+        $this->setPassword('this will be updated later with plain password hashed');
 
         return $this;
     }
