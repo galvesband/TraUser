@@ -4,7 +4,7 @@
         {{ 'You are logged in as %name%'|trans({'%name%' : app.user.name}, "GalvesbandTraUserBundle") }}
     </li>
     <li role="presentation">
-        <a role="menuitem" tabindex="-1" href="{{ path('galvesband_trauser_default_index') }}">
+        <a role="menuitem" tabindex="-1" href="{{ path('admin_galvesband_trauser_user_show', {'id' : app.user.id}) }}">
             {{ 'See your profile'|trans({}, "GalvesbandTraUserBundle") }}
         </a>
     </li>

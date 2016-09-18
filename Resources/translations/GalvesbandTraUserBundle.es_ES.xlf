@@ -112,6 +112,24 @@
                 <source>Change password</source>
                 <target>Cambiar contraseña</target>
             </trans-unit>
+            <trans-unit id="Password Recovery">
+                <source>Password Recovery</source>
+                <target>Recuperación de Contraseña</target>
+            </trans-unit>
+            <trans-unit id="Recover password">
+                <source>Recover password</source>
+                <target>Recuperar Contraseña</target>
+            </trans-unit>
+            <trans-unit id="An email has been sent to the user's account with instructions on how to reset his password.">
+                <source>An email has been sent to the user's account with instructions on how to reset his password.</source>
+                <target>Un correo electrónico ha sido enviado a la cuenta del usuario con instrucciones sobre cómo recuperar la contraseña.</target>
+            </trans-unit>
+            <trans-unit id="email_password_forgot_instructions">
+                <source>email_password_forgot_instructions</source>
+                <target>Una petición de recuperación de contraseña ha sido recibida para el usuario
+                enlazado a esta cuenta de correo electrónico. Para continuar con el proceso use
+                el siguiente enlace:</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

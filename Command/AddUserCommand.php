@@ -43,7 +43,7 @@ class AddUserCommand extends ContainerAwareCommand
         $user->setName($input->getArgument('username'));
         $user->setEmail($input->getArgument('email'));
         $user->setPlainPassword($input->getArgument('password'));
-        $user->setIsActive($input->getOption('inactive'));
+        $user->setIsActive(!$input->getOption('inactive'));
 
         // TODO Validation of User class
 

@@ -50,16 +50,30 @@
         <input type="password" class="form-control" id="password" name="_password" placeholder="{{ 'Password'|trans({}, 'GalvesbandTraUserBundle') }}" required>
 
         <button class="btn btn-lg btn-primary btn-block" type="submit">{{ 'Identify'|trans({}, 'GalvesbandTraUserBundle') }}</button>
+        <a class="btn btn-lg btn-block" href="{{ path('forgot_password') }}">
+            {{ 'Recover password'|trans({}, 'GalvesbandTraUserBundle') }}
+        </a>
     </form>
 
     {% if error %}
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-md-offset-3">
                 <div id="error-message" class="alert alert-danger alert-error">
                     {{ error.messageKey|trans(error.messageData, 'security') }}
                 </div>
             </div>
         </div>
     {% endif %}
+
+    {# Reset-Password send us the user with a notice flash #}
+    {% for flash_message in app.session.flashbag.get('notice') %}
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div id="password-reset" class="alert alert-success text-center">
+                    {{ flash_message }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 
 {% endblock tra_user_content %}

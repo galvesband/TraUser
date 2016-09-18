@@ -630,6 +630,25 @@ security:
 
 ```
 
+#### Correo ####
+
+TraUserBundle puede enviar correos para permitir a un usuario que ha
+olvidado su contraseña acceder al sistema o recuperar la contraseña.
+Para eso necesita que _SwiftMailer_ este correctamente configurado.
+
+En lo que respecta a desarrollo, sin embargo, no es necesario hacer
+mucho; basta con descomentar una línea de `config_dev.yml`:
+
+```yml
+swiftmailer:
+    disable_delivery: true
+```
+
+Con esta opción los correos no serán enviados realmente pero se los podrá
+inspeccionar a traves de la barra de depuración. También existe la 
+opción `delivery_address: me@example.com` de forma que el correo acabe
+siempre en esa dirección.
+
 ## Configurando la conexión a la base de datos ##
 
 Por último, hay que configurar la conexión de base de datos del proyecto.

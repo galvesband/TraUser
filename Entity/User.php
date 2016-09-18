@@ -29,7 +29,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @package Galvesband\TraUserBundle\Entity
  * @ORM\Entity(repositoryClass="Galvesband\TraUserBundle\Entity\UserRepository")
  * @UniqueEntity(fields="name", message="Username already taken")
- * @UniqueEntity(fields="email", message="Email already in use")
  * @ORM\Table(name="tra_user")
  */
 class User implements AdvancedUserInterface, \Serializable {
@@ -43,15 +42,15 @@ class User implements AdvancedUserInterface, \Serializable {
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=128, unique=true)
      * @Assert\NotBlank()
-     * @Assert\Length(max=255, min=4)
+     * @Assert\Length(max=128, min=4)
      */
     private $name;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      * @Assert\Email()
      */
@@ -94,6 +93,12 @@ class User implements AdvancedUserInterface, \Serializable {
      * @ORM\JoinTable(name="tra_users_groups")
      */
     private $groups;
+
+    /**
+     * @ORM\OneToOne(targetEntity="ResetToken", inversedBy="user")
+     * @ORM\JoinColumn(name="token_id", referencedColumnName="id")
+     */
+    private $token;
 
     public function __construct()
     {
@@ -469,5 +474,29 @@ class User implements AdvancedUserInterface, \Serializable {
     public function __toString()
     {
         return $this->getName();
+    }
+
+    /**
+     * Set token
+     *
+     * @param \Galvesband\TraUserBundle\Entity\ResetToken $token
+     *
+     * @return User
+     */
+    public function setToken(\Galvesband\TraUserBundle\Entity\ResetToken $token = null)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return \Galvesband\TraUserBundle\Entity\ResetToken
+     */
+    public function getToken()
+    {
+        return $this->token;
     }
 }

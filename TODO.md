@@ -21,7 +21,7 @@
  - Bloque usuario arriba a la derecha
    - ~~Integrar con Sonata~~
    - ~~Plantilla decente~~
-   - Acceso a perfil
+   - ~~Acceso a perfil~~
    - Acceso a Cambio de contraseña
    - ~~Logout~~
      
@@ -34,9 +34,21 @@
  - Usuario: CREATE | EDIT: mostrar dos campos para la contraseña
 
  - Forgot password. 
-   - Formulario que acepte nombre y email
-   - Si es correcto, mandar a usuario correo con nuevo password aleatorio
-   - Si no, disimular 
+   - ~~Formulario que acepte nombre y email~~
+   - ~~Si es correcto, crear token en BD y enviar correo con enlace para reset a usuario~~
+   - ~~Si no, disimular~~
+   - Reducir tamaño de token, me he pasado
+   - Acción que recibe un token
+     - Comprueba que es correcto (existe y fue creado hace menos de 24h, por ejemplo)
+     - Si es correcto genera una contraseña y la muestra al usuario, borra el token
+
+## Estética ##
+
+ - Pasada a login 
+ - Pasada a reset-password
+ - Pasada a email reset-password
+   - html
+   - txt
 
 ## Tests ##
 
