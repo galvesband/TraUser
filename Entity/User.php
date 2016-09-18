@@ -60,7 +60,6 @@ class User implements AdvancedUserInterface, \Serializable {
      * Holds the plain password. Not a column.
      *
      * @var string
-     * @Assert\NotBlank()
      * @Assert\Length(max=4096)
      */
     private $plainPassword;
@@ -106,6 +105,8 @@ class User implements AdvancedUserInterface, \Serializable {
         // BCrypt doesn't need salting... So this is mostly useless.
         $this->refreshSalt();
         $this->groups = new ArrayCollection();
+        // An empty value by default will make the UserManager to not update the password field.
+        $this->plainPassword = null;
     }
 
     public function refreshSalt()
@@ -398,7 +399,6 @@ class User implements AdvancedUserInterface, \Serializable {
 
         // Changing some mapped values so preUpdate will get called.
         $this->refreshSalt();
-        $this->password = '';
 
         return $this;
     }

@@ -33,11 +33,9 @@ class UserManager
     {
         $plainPassword = $user->getPlainPassword();
 
-        if (!empty($plainPassword)) {
-            $encoder = $this->getEncoder($user);
-            $user->setPassword($encoder->encodePassword($plainPassword, $user->getSalt()));
-            $user->eraseCredentials();
-        }
+        $encoder = $this->getEncoder($user);
+        $user->setPassword($encoder->encodePassword($plainPassword, $user->getSalt()));
+        $user->eraseCredentials();
     }
 
     public function preUpdate(PreUpdateEventArgs $event)
@@ -48,8 +46,10 @@ class UserManager
             return;
         }
 
-        $this->updateUser($user);
-        $event->setNewValue('password', $user->getPassword());
+        if (!empty($user->getPlainPassword())) {
+            $this->updateUser($user);
+            $event->setNewValue('password', $user->getPassword());
+        }
     }
 
     public function prePersist(LifecycleEventArgs $event)
