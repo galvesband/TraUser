@@ -167,6 +167,10 @@ sonata_block:
   blocks:
     sonata.admin.block.admin_list:
       contexts: [admin]
+    
+    # Activar bloque de búsqueda
+    sonata.admin.block.search_result:
+      contexts:   [admin]
       
     sonata.block.service.text:
     #sonata.block.service.rss:

@@ -3,6 +3,7 @@
 ## Comandos ##
 
  - AddUser
+   - Validación de datos introducidos por usuario
 
 ## Estética ##
 
