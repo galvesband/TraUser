@@ -13,23 +13,6 @@ class GroupAdmin extends AbstractAdmin {
     protected $translationDomain = 'GalvesbandTraUserBundle';
 
     protected function configureFormFields(FormMapper $formMapper) {
-        $repository = $this->getConfigurationPool()->getContainer()->get('doctrine')
-            ->getManager()->getRepository('GalvesbandTraUserBundle:Role');
-        $currentUser = $this->getConfigurationPool()->getContainer()->get('security.token_storage')
-            ->getToken()->getUser();
-
-        if (!$currentUser->hasRole('ROLE_SUPER_ADMIN')) {
-            /* This query is used to populate the roles field. We don't want
-               ROLE_SUPER_ADMIN listed in there if the user is not ROLE_SUPER_ADMIN */
-            $query = $repository->createQueryBuilder('r')
-                ->where('r.role <> :role_name')
-                ->setParameter('role_name', 'ROLE_SUPER_ADMIN')
-                ->getQuery();
-        }
-        else {
-            $query = $repository->createQueryBuilder('r')->getQuery();
-        }
-
         $formMapper
             ->with('Basic Information')
                 ->add('name', 'text')
@@ -39,7 +22,6 @@ class GroupAdmin extends AbstractAdmin {
                 ->add('roles', 'sonata_type_model', [
                     'class' => 'Galvesband\TraUserBundle\Entity\Role',
                     'multiple' => true,
-                    'query' => $query
                 ])
             ->end();
     }

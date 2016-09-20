@@ -108,9 +108,9 @@
                 <source>You are logged in as %name%</source>
                 <target>Estás identificado como %name%</target>
             </trans-unit>
-            <trans-unit id="Change password">
-                <source>Change password</source>
-                <target>Cambiar contraseña</target>
+            <trans-unit id="Edit your profile">
+                <source>Edit your profile</source>
+                <target>Edita tu perfil</target>
             </trans-unit>
             <trans-unit id="Password Recovery">
                 <source>Password Recovery</source>
@@ -156,6 +156,10 @@ el siguiente enlace:</target>
             <trans-unit id="The password and its confirmation do not match.">
                 <source>The password and its confirmation do not match.</source>
                 <target>La contraseña y su confirmación no coinciden.</target>
+            </trans-unit>
+            <trans-unit id="Is Super Admin">
+                <source>Is Super Admin</source>
+                <target>Super Administrador</target>
             </trans-unit>
         </body>
     </file>

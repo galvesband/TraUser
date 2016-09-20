@@ -1,45 +1,8 @@
 # TODO #
 
-## Seguridad ##
-
- - Usuarios que no sean ROLE_SUPER_ADMIN no deben poder
-   crear usuarios o grupos con rol ROLE_SUPER_ADMIN.
-
-   - Lanzar Unauthorized cuando un nuevo usuario, grupo o rol
-     es ROLE_SUPER_ADMIN si usuario logeado no es ROLE_SUPER_ADMIN.
-
-## Acciones ##
-
- - Cambio de contraseña para usuario logeado
-   
-## Integración con Sonata ##
-
- - Bloque usuario arriba a la derecha
-   - Acceso a Cambio de contraseña
- 
- - ~~Usuario: CREATE | EDIT: mostrar dos campos para la contraseña~~
-
 ## Comandos ##
 
  - AddUser
- 
- - RemoveUser
- 
- - AddGroup
- 
- - RemoveGroup
- 
- - AddRole
- 
- - RemoveRole
- 
- - AddUserToGroup
- 
- - RemoveUserFromGroup
- 
- - AddRoleToGroup
- 
- - RemoveToleToGroup
 
 ## Estética ##
 

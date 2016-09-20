@@ -2,50 +2,68 @@
 
 namespace Galvesband\TraUserBundle\Admin;
 
+use Galvesband\TraUserBundle\Entity\User;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class UserAdmin extends AbstractAdmin {
 
     protected $translationDomain = 'GalvesbandTraUserBundle';
 
+    public function preRemove($object)
+    {
+        if ($object instanceof User && $object->getIsSuperAdmin()) {
+            /** @var User $currentUser */
+            /** @noinspection PhpUndefinedMethodInspection */
+            $currentUser = $this->getConfigurationPool()->getContainer()->get('security.token_storage')
+                ->getToken()->getUser();
+
+            if (!$currentUser->getIsSuperAdmin()) {
+                throw new UnauthorizedHttpException('Object going to be deleted is a super-admin.');
+            }
+        }
+
+        parent::preRemove($object);
+    }
+
+
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $repository = $this->getConfigurationPool()->getContainer()->get('doctrine')
-            ->getManager()->getRepository('GalvesbandTraUserBundle:Group');
+        /** @var User $currentUser */
         $currentUser = $this->getConfigurationPool()->getContainer()->get('security.token_storage')
             ->getToken()->getUser();
-
-        if (!$currentUser->hasRole('ROLE_SUPER_ADMIN')) {
-            /* This query is used to populate the groups field. We don't want groups
-               with ROLE_SUPER_ADMIN listed in there if the user is not ROLE_SUPER_ADMIN */
-            $query = $repository->createQueryBuilder('g')
-                ->innerJoin('g.roles', 'r')
-                ->where('r.role <> :role_name')
-                ->setParameter('role_name', 'ROLE_SUPER_ADMIN')
-                ->getQuery();
-        }
-        else {
-            $query = $repository->createQueryBuilder('g')->getQuery();
-        }
 
         $formMapper
             ->with('Basic Information', [
                 'class' => 'col-md-6',
             ])
                 ->add('name', 'text')
-                ->add('email', 'text')
+                ->add('email', 'text');
+
+        if ($currentUser->hasRole('ROLE_ADMIN')) {
+            $formMapper
                 ->add('isActive')
                 ->add('groups', 'sonata_type_model', [
                     'class' => 'Galvesband\TraUserBundle\Entity\Group',
                     'multiple' => true,
-                    'query' => $query,
                 ], [
                     'placeholder' => 'No group selected'
-                ])
+                ]);
+        }
+
+        // Only a super-admin can mess with this field.
+        // If someone tries to supply a value in a create or edit form while not logged in
+        // as super-admin an error will be triggered.
+        if ($currentUser->hasRole('ROLE_SUPER_ADMIN')) {
+            $formMapper
+                ->add('isSuperAdmin');
+        }
+
+        $formMapper
             ->end()
 
             ->with('Authentication', ['class' => 'col-md-6'])
@@ -70,7 +88,8 @@ class UserAdmin extends AbstractAdmin {
         $showMapper
             ->add('name')
             ->add('email')
-            ->add('is_active', 'boolean')
+            ->add('isActive', 'boolean')
+            ->add('isSuperAdmin')
             ->add('groups', null, [
                 'route' => [
                     'name' => 'show'
@@ -96,6 +115,7 @@ class UserAdmin extends AbstractAdmin {
             ->add('name')
             ->add('email')
             ->add('isActive')
+            ->add('isSuperAdmin')
             ->add('groups');
     }
 
@@ -109,6 +129,7 @@ class UserAdmin extends AbstractAdmin {
             ])
             ->add('email')
             ->add('isActive')
+            ->add('isSuperAdmin')
             ->add('groups', null, [
                 'route' => [
                     'name' => 'show'
@@ -137,7 +158,7 @@ class UserAdmin extends AbstractAdmin {
      */
     public function toString($object)
     {
-        return $object instanceof \Galvesband\TraUserBundle\Entity\User
+        return $object instanceof User
             ? $object->getName()
             : 'User';
     }

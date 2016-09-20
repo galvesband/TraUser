@@ -2,7 +2,7 @@ services:
   # User administration class
   galvesband.tra.user.admin.user:
     class: Galvesband\TraUserBundle\Admin\UserAdmin
-    arguments: [~, Galvesband\TraUserBundle\Entity\User, GalvesbandTraUserBundle:UserCRUD]
+    arguments: [~, Galvesband\TraUserBundle\Entity\User, ~]
     tags:
       - { name: sonata.admin, manager_type: orm, group: Users and Permissions, label: Users }
 

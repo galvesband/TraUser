@@ -9,8 +9,8 @@
         </a>
     </li>
     <li role="presentation">
-        <a role="menuitem" tabindex="-1" href="{{ path('admin_galvesband_trauser_group_list') }}">
-            {{ 'Change password' | trans({}, "GalvesbandTraUserBundle") }}
+        <a role="menuitem" tabindex="-1" href="{{ path('admin_galvesband_trauser_user_edit', {'id' : app.user.id}) }}">
+            {{ 'Edit your profile' | trans({}, "GalvesbandTraUserBundle") }}
         </a>
     </li>
     <li role="presentation">

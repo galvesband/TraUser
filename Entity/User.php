@@ -89,6 +89,12 @@ class User implements AdvancedUserInterface, \Serializable {
     private $isActive;
 
     /**
+     * @var bool
+     * @ORM\Column(name="is_super_admin", type="boolean")
+     */
+    private $isSuperAdmin;
+
+    /**
      * @var ArrayCollection
      * @ORM\ManyToMany(targetEntity="Group", inversedBy="users")
      * @ORM\JoinTable(name="tra_users_groups")
@@ -104,6 +110,7 @@ class User implements AdvancedUserInterface, \Serializable {
     public function __construct()
     {
         $this->isActive = true;
+        $this->isSuperAdmin = false;
         // BCrypt doesn't need salting... So this is mostly useless.
         $this->refreshSalt();
         $this->groups = new ArrayCollection();
@@ -169,16 +176,19 @@ class User implements AdvancedUserInterface, \Serializable {
     public function getRoles()
     {
         $roles = [];
+        if ($this->getIsSuperAdmin()) {
+            $roles[] = 'ROLE_SUPER_ADMIN';
+        }
         foreach ($this->getGroups() as $group) {
-            /** @var $role Role */
-            foreach ($group->getRoles() as $role) {
-                if (!isset($roles[$role->getRole()])) {
-                    $roles[$role->getRole()] = $role->getRole();
+            $groupRoles = $group->getRoles();
+            /** @var Role $role */
+            foreach ($groupRoles as $role) {
+                if (false === array_search($role->getRole(), $roles)) {
+                    $roles[] = $role->getRole();
                 }
             }
         }
 
-        $roles = array_values($roles);
         if (count($roles) === 0) {
             $roles[] = 'ROLE_USER';
         }
@@ -438,7 +448,7 @@ class User implements AdvancedUserInterface, \Serializable {
      *
      * @return User
      */
-    public function addGroup(\Galvesband\TraUserBundle\Entity\Group $group)
+    public function addGroup(Group $group)
     {
         $this->groups[] = $group;
 
@@ -450,7 +460,7 @@ class User implements AdvancedUserInterface, \Serializable {
      *
      * @param \Galvesband\TraUserBundle\Entity\Group $group
      */
-    public function removeGroup(\Galvesband\TraUserBundle\Entity\Group $group)
+    public function removeGroup(Group $group)
     {
         $this->groups->removeElement($group);
     }
@@ -467,12 +477,7 @@ class User implements AdvancedUserInterface, \Serializable {
 
     public function hasRole($role)
     {
-        foreach ($this->getRoles() as $myRole) {
-            if ($role === $myRole)
-                return true;
-        }
-
-        return false;
+        return (false !== array_search($role, $this->getRoles()));
     }
 
     public function __toString()
@@ -487,7 +492,7 @@ class User implements AdvancedUserInterface, \Serializable {
      *
      * @return User
      */
-    public function setToken(\Galvesband\TraUserBundle\Entity\ResetToken $token = null)
+    public function setToken(ResetToken $token = null)
     {
         $this->token = $token;
 
@@ -502,5 +507,31 @@ class User implements AdvancedUserInterface, \Serializable {
     public function getToken()
     {
         return $this->token;
+    }
+
+
+
+    /**
+     * Set isSuperAdmin
+     *
+     * @param boolean $isSuperAdmin
+     *
+     * @return User
+     */
+    public function setIsSuperAdmin($isSuperAdmin)
+    {
+        $this->isSuperAdmin = $isSuperAdmin;
+
+        return $this;
+    }
+
+    /**
+     * Get isSuperAdmin
+     *
+     * @return boolean
+     */
+    public function getIsSuperAdmin()
+    {
+        return $this->isSuperAdmin;
     }
 }
