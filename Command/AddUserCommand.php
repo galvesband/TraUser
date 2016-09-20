@@ -31,7 +31,8 @@ class AddUserCommand extends ContainerAwareCommand
             ->addArgument('username', InputArgument::REQUIRED, "The name of the new user.")
             ->addArgument('email', InputArgument::REQUIRED, "The email of the user")
             ->addArgument('password', InputArgument::REQUIRED, "The password of the new user")
-            ->addOption("inactive", "i", InputOption::VALUE_OPTIONAL, "Sets the new user as inactive.", false);
+            ->addOption("inactive", "i", InputOption::VALUE_NONE, "Sets the new user as inactive.")
+            ->addOption("super", "s", InputOption::VALUE_NONE, "Sets the new user as super-administrator.");
     }
 
     /**
@@ -44,6 +45,7 @@ class AddUserCommand extends ContainerAwareCommand
         $user->setEmail($input->getArgument('email'));
         $user->setPlainPassword($input->getArgument('password'));
         $user->setIsActive(!$input->getOption('inactive'));
+        $user->setIsSuperAdmin($input->getOption('super'));
 
         // TODO Validation of User class
 
