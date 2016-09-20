@@ -5,6 +5,8 @@ services:
     arguments: [~, Galvesband\TraUserBundle\Entity\User, ~]
     tags:
       - { name: sonata.admin, manager_type: orm, group: Users and Permissions, label: Users }
+    calls:
+      - [ setTranslationDomain, ['GalvesbandTraUserBundle']]
 
   # Group administration class
   galvesband.tra.user.admin.group:
@@ -12,6 +14,8 @@ services:
     arguments: [~, Galvesband\TraUserBundle\Entity\Group, ~]
     tags:
       - { name: sonata.admin, manager_type: orm, group: Users and Permissions, label: Groups }
+    calls:
+          - [ setTranslationDomain, ['GalvesbandTraUserBundle']]
 
   # Role administration class
   galvesband.tra.user.admin.role:
@@ -19,6 +23,8 @@ services:
     arguments: [~, Galvesband\TraUserBundle\Entity\Role, ~]
     tags:
       - { name: sonata.admin, manager_type: orm, group: Users and Permissions, label: Roles }
+    calls:
+          - [ setTranslationDomain, ['GalvesbandTraUserBundle']]
 
   # User Manager - Hash the user password when modified before persisting or updating him
   galvesband.tra.user.manager:
