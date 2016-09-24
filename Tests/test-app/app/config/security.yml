@@ -1,0 +1,93 @@
+# To get started with security, check out the documentation:
+# http://symfony.com/doc/current/book/security.html
+security:
+    encoders:
+        Galvesband\TraUserBundle\Entity\User: bcrypt
+
+    # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
+    providers:
+        tra_user_provider:
+            entity:
+                class: GalvesbandTraUserBundle:User
+                property: name
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        login_firewall:
+            pattern: "^/admin/(login|forgot_password|(recover_password(.*)))$"
+            anonymous: ~
+
+        admin_firewall:
+            pattern: ^/admin
+            form_login:
+                login_path: /admin/login
+                check_path: /admin/login_check
+                csrf_token_generator: security.csrf.token_manager
+                default_target_path: sonata_admin_dashboard
+            logout:
+                invalidate_session: false
+                path: /admin/logout
+                target: /
+            provider: tra_user_provider
+
+        main:
+            anonymous: ~
+
+    access_control:
+        - { path: ^/admin/login,            roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/forgot_password,  roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/recover_password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin,                  roles: ROLE_SONATA_ADMIN }
+
+    role_hierarchy:
+        # For convenience we gather here roles related to users, groups and roles access in Sonata
+        # and group them in 3 basic profiles: USER, ADMIN and ROLESADMIN (prefixed by ROLE_GALVESBAND_TRA_USER_)
+        ROLE_GALVESBAND_TRA_USER_USER:
+            # USER will be able to list and see details of everything (users, groups and roles)
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_LIST
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_VIEW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_SHOW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_EXPORT
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_LIST
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_VIEW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_SHOW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_EXPORT
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_LIST
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_VIEW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_SHOW
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EXPORT
+        ROLE_GALVESBAND_TRA_USER_ADMIN:
+            # An ADMIN will be able to create, edit and delete users and groups, but not roles
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_CREATE
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_EDIT
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_DELETE
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_CREATE
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_EDIT
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_DELETE
+        ROLE_GALVESBAND_TRA_USER_ROLESADMIN:
+            # A ROLESADMIN will be able to create, edit and delete roles
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_CREATE
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EDIT
+            - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_DELETE
+
+        # Next we define the real roles we are going to use in the application.
+        # In this example scheme we will have normal users (STAFF), admins (ADMIN)
+        # and super admins (SUPER_ADMIN). Staffers will be able to work in the admin zone
+        # managin the application content while not being able to modify other user's profile.
+        # Admins will be able to manage users in addition to whatever staffers can do.
+        # Super Admins will be able to modify the roles associated with the groups the users
+        # belong to.
+        #
+        # Of course this is an example scheme, but works nicely for small to mid-tier apps where
+        # the application is used by editors (staffers) under the supervision of an owner (admin).
+        # The Super Admin role will be reserver to developers when something goes wrong.
+
+        # STAFF can enter in the admin zone (ROLE_SONATA ADMIN) and list and see users, groups and roles.
+        ROLE_STAFF: [ROLE_SONATA_ADMIN, ROLE_USER, ROLE_GALVESBAND_TRA_USER_USER]
+        # Admins will be able to create and edit users and groups
+        ROLE_ADMIN: [ROLE_STAFF, ROLE_GALVESBAND_TRA_USER_ADMIN]
+        # Super Admin will also be able to manage roles
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_GALVESBAND_TRA_USER_ROLESADMIN, ROLE_ALLOWED_TO_SWITCH]

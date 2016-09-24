@@ -1,0 +1,10 @@
+sonata_admin:
+  title: Administración
+  security:
+    handler: galvesband.tra.user.security.handler.per_model_handler
+
+  templates:
+    # Set the user block template to the one in GalvesbandTraUserBundle
+    # Default:
+    #user_block: SonataAdminBundle:Core:user_block.html.twig
+    user_block: GalvesbandTraUserBundle:blocks:user_block.html.twig

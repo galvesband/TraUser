@@ -1,7 +1,7 @@
 {
   "name" : "galvesband/tra-user-bundle",
   "license": "proprietary",
-  "description" : "A simple User bundle",
+  "description" : "A simple User bundle for Sonata",
   "type" : "symfony-bundle",
   "authors" : [{
     "name" : "Rafael Gálvez-Cañero",
@@ -16,6 +16,9 @@
     "sonata-project/admin-bundle": "3.6.*",
     "sonata-project/doctrine-orm-admin-bundle": "3.0.*",
     "ircmaxell/random-lib": "1.2.*"
+  },
+  "require-dev": {
+    "symfony/framework-standard-edition" : "~3.1"
   },
   "autoload" : {
     "psr-0" : {
