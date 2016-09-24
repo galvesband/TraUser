@@ -13,4 +13,5 @@ Tests/test-app/app/config/parameters.yml
 !/Tests/test-app/var/sessions/.gitkeep
 /vendor/
 /Tests/test-app/web/bundles
+*.*~
 
