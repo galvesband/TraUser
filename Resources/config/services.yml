@@ -1,8 +1,8 @@
 services:
   # User administration class
   galvesband.tra.user.admin.user:
-    class: Galvesband\TraUserBundle\Admin\UserAdmin
-    arguments: [~, Galvesband\TraUserBundle\Entity\User, ~]
+    class:          Galvesband\TraUserBundle\Admin\UserAdmin
+    arguments:      [~, Galvesband\TraUserBundle\Entity\User, ~]
     tags:
       - { name: sonata.admin, manager_type: orm, group: Users and Permissions, label: Users }
     calls:
@@ -10,17 +10,17 @@ services:
 
   # Group administration class
   galvesband.tra.user.admin.group:
-    class: Galvesband\TraUserBundle\Admin\GroupAdmin
-    arguments: [~, Galvesband\TraUserBundle\Entity\Group, ~]
+    class:          Galvesband\TraUserBundle\Admin\GroupAdmin
+    arguments:      [~, Galvesband\TraUserBundle\Entity\Group, ~]
     tags:
       - { name: sonata.admin, manager_type: orm, group: Users and Permissions, label: Groups }
     calls:
-          - [ setTranslationDomain, ['GalvesbandTraUserBundle']]
+      - [ setTranslationDomain, ['GalvesbandTraUserBundle']]
 
   # Role administration class
   galvesband.tra.user.admin.role:
-    class: Galvesband\TraUserBundle\Admin\RoleAdmin
-    arguments: [~, Galvesband\TraUserBundle\Entity\Role, ~]
+    class:          Galvesband\TraUserBundle\Admin\RoleAdmin
+    arguments:      [~, Galvesband\TraUserBundle\Entity\Role, ~]
     tags:
       - { name: sonata.admin, manager_type: orm, group: Users and Permissions, label: Roles }
     calls:
@@ -28,41 +28,48 @@ services:
 
   # User Manager - Hash the user password when modified before persisting or updating him
   galvesband.tra.user.manager:
-    class: Galvesband\TraUserBundle\DependencyInjection\UserManager
+    class:          Galvesband\TraUserBundle\DependencyInjection\UserManager
     arguments:
       - "@security.encoder_factory"
+      - "@galvesband.tra.user.security.generator.factory"
     tags:
       - { name: doctrine.event_listener, event: prePersist }
       - { name: doctrine.event_listener, event: preUpdate }
+      - { name: doctrine.event_listener, event: postLoad }
 
   # User security handler - Forbids actions over users with ROLE_SUPER_ADMIN to anyone not being ROLE_SUPER_ADMIN
   galvesband.tra.user.security.handler.user_security_handler:
-    class: Galvesband\TraUserBundle\Security\Handler\UserSecurityHandler
+    class:          Galvesband\TraUserBundle\Security\Handler\UserSecurityHandler
     arguments:
-      authChecker: "@security.authorization_checker"
-      superRoles: [ ROLE_SECURITY_HANDLER ]
+      authChecker:  "@security.authorization_checker"
+      superRoles:   [ ROLE_SECURITY_HANDLER ]
       tokenStorage: "@security.token_storage"
 
   # Group security handler - Forbids actions over groups with ROLE_SUPER_ADMIN to anyone not being ROLE_SUPER_ADMIN
   galvesband.tra.user.security.handler.group_security_handler:
-      class: Galvesband\TraUserBundle\Security\Handler\GroupSecurityHandler
-      arguments:
-        authChecker: "@security.authorization_checker"
-        superRoles: [ ROLE_SECURITY_HANDLER ]
-        tokenStorage: "@security.token_storage"
+    class:          Galvesband\TraUserBundle\Security\Handler\GroupSecurityHandler
+    arguments:
+      authChecker:  "@security.authorization_checker"
+      superRoles:   [ ROLE_SECURITY_HANDLER ]
+      tokenStorage: "@security.token_storage"
 
   # Handles security in SonataAdmin
   # Relies on other security handlers based on an instanceof check
   galvesband.tra.user.security.handler.per_model_handler:
-    class: Galvesband\TraUserBundle\Security\Handler\PerModelSecurityHandler
+    class:          Galvesband\TraUserBundle\Security\Handler\PerModelSecurityHandler
     arguments:
-      authChecker: "@security.authorization_checker"
-      superRoles: [ ROLE_SUPER_ADMIN ]
+      authChecker:  "@security.authorization_checker"
+      superRoles:   [ ROLE_SUPER_ADMIN ]
       # Allowed handlers
       handlers:
-        role: '@sonata.admin.security.handler.role'
-        noop: '@sonata.admin.security.handler.noop'
-        user: '@galvesband.tra.user.security.handler.user_security_handler'
-        group: '@galvesband.tra.user.security.handler.group_security_handler'
+        role:       '@sonata.admin.security.handler.role'
+        noop:       '@sonata.admin.security.handler.noop'
+        user:       '@galvesband.tra.user.security.handler.user_security_handler'
+        group:      '@galvesband.tra.user.security.handler.group_security_handler'
       # Relation between classes and security handlers to be applied to
       classHandlerMap: '%galvesband.tra.user.admin.security.handler_map%'
+
+  # Exposing RandomLib/Factory through a service
+  galvesband.tra.user.security.generator.factory:
+    class:          RandomLib\Factory
+    arguments:      ~

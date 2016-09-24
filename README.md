@@ -232,6 +232,15 @@ el comando Symfony en el entorno porque habrá nuevos comandos de Sonata.
 [localhost:8000/admin](http://localhost:8000/admin) (suponiendo que uses el
 servidor web de php).
 
+### RandomLib ###
+
+Para generar contraseñar y salts y tokens se usa 
+[RandomLib](https://github.com/ircmaxell/RandomLib), versión 1.2.*. Como 
+estamos configurando TraUserBundle a mano sin usar las dependencias de
+composer, hay que requerir en el proyecto el paquete:
+
+ - `"ircmaxell/random_lib":"1.2.*"`
+
 ## Configurando TraUserBundle ##
 
 Lo siguiente es configurar Symfony para que use traUserBundle.

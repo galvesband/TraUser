@@ -4,16 +4,21 @@ namespace Galvesband\TraUserBundle\DependencyInjection;
 
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Galvesband\TraUserBundle\Entity\ResetToken;
 use Galvesband\TraUserBundle\Entity\User;
+use RandomLib\Factory;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 class UserManager
 {
     protected $encoderFactory;
+    /** @var  Factory */
+    protected $generatorFactory;
 
-    public function __construct(EncoderFactoryInterface $encoderFactory)
+    public function __construct(EncoderFactoryInterface $encoderFactory, Factory $generatorFactory)
     {
         $this->encoderFactory = $encoderFactory;
+        $this->generatorFactory = $generatorFactory;
     }
 
     public function getEncoder(User $user)
@@ -34,32 +39,49 @@ class UserManager
         $plainPassword = $user->getPlainPassword();
 
         $encoder = $this->getEncoder($user);
+        $user->setSalt($this->generatorFactory->getMediumStrengthGenerator()->generateString(12));
         $user->setPassword($encoder->encodePassword($plainPassword, $user->getSalt()));
         $user->eraseCredentials();
     }
 
+    public function updateResetToken(ResetToken $token)
+    {
+        $token->setToken($this->generatorFactory->getLowStrengthGenerator()->generateString(32));
+    }
+
     public function preUpdate(PreUpdateEventArgs $event)
     {
-        $user = $event->getEntity();
+        $object = $event->getEntity();
 
-        if (!($user instanceof User)) {
-            return;
-        }
-
-        if (!empty($user->getPlainPassword())) {
-            $this->updateUser($user);
-            $event->setNewValue('password', $user->getPassword());
+        if ($object instanceof User) {
+            if (!empty($object->getPlainPassword())) {
+                $this->updateUser($object);
+                $event->setNewValue('password', $object->getPassword());
+                $event->setNewValue('salt', $object->getSalt());
+            }
         }
     }
 
     public function prePersist(LifecycleEventArgs $event)
     {
-        $user = $event->getEntity();
+        $object = $event->getEntity();
 
-        if (!($user instanceof User)) {
+        if ($object instanceof User) {
+            $this->updateUser($object);
+        }
+
+        if ($object instanceof ResetToken) {
+            $this->updateResetToken($object);
+        }
+    }
+
+    public function postLoad(LifecycleEventArgs $args)
+    {
+        $object = $args->getEntity();
+        if ((!$object instanceof User) || (!$object instanceof ResetToken)) {
             return;
         }
 
-        $this->updateUser($user);
+        $object->setGeneratorFactory($this->generatorFactory);
     }
 }

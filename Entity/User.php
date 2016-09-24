@@ -111,16 +111,10 @@ class User implements AdvancedUserInterface, \Serializable {
     {
         $this->isActive = true;
         $this->isSuperAdmin = false;
-        // BCrypt doesn't need salting... So this is mostly useless.
-        $this->refreshSalt();
         $this->groups = new ArrayCollection();
+        $this->salt = null;
         // An empty value by default will make the UserManager to not update the password field.
         $this->plainPassword = null;
-    }
-
-    public function refreshSalt()
-    {
-        $this->salt = md5(uniqid(null, true));
     }
 
     // Implementation of UserInterface
@@ -411,8 +405,8 @@ class User implements AdvancedUserInterface, \Serializable {
         $this->plainPassword = $password;
 
         // Changing some mapped values so preUpdate will get called.
-        $this->refreshSalt();
         $this->setPassword('this will be updated later with plain password hashed');
+        $this->setSalt('Same');
 
         return $this;
     }

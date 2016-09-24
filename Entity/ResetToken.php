@@ -41,7 +41,6 @@ class ResetToken
 
     public function __construct()
     {
-        $this->setToken();
         $this->setCreatedAt(new \DateTime('now'));
     }
 
@@ -62,13 +61,9 @@ class ResetToken
      *
      * @return ResetToken
      */
-    public function setToken($token = null)
+    public function setToken($token)
     {
-        if (!is_null($token)) {
-            $this->token = $token;
-        } else {
-            $this->token = substr(bin2hex(random_bytes(64)), 0, 32);
-        }
+        $this->token = $token;
 
         return $this;
     }
@@ -110,11 +105,11 @@ class ResetToken
     /**
      * Set user
      *
-     * @param \Galvesband\TraUserBundle\Entity\User $user
+     * @param User $user
      *
      * @return ResetToken
      */
-    public function setUser(\Galvesband\TraUserBundle\Entity\User $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -124,7 +119,7 @@ class ResetToken
     /**
      * Get user
      *
-     * @return \Galvesband\TraUserBundle\Entity\User
+     * @return User
      */
     public function getUser()
     {

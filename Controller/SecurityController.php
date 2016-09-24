@@ -3,11 +3,11 @@
 namespace Galvesband\TraUserBundle\Controller;
 
 use Galvesband\TraUserBundle\Entity\ResetToken;
+use RandomLib\Factory;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Galvesband\TraUserBundle\Entity\User;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class SecurityController
@@ -56,31 +56,21 @@ class SecurityController extends Controller {
         {
             $translator = $this->get('translator');
             $repository = $this->get('doctrine')->getRepository('GalvesbandTraUserBundle:User');
-            /**
-             * @var $user User
-             */
-            $user = $repository->createQueryBuilder('u')
-                ->where('u.name = :user_name')
-                ->andWhere('u.email = :email')
-                ->andWhere('u.isActive = 1')
-                ->setParameter('user_name', $request->get('username'))
-                ->setParameter('email', $request->get('email'))
-                ->getQuery()
-                ->setMaxResults(1)
-                ->getOneOrNullResult();
+            $user = $repository->findByNameAndEmail($request->get('username'), $request->get('email'));
 
             if ($user)
             {
                 $token = $user->getToken();
                 $em = $this->get('doctrine')->getManager();
                 if ($token) {
-                    $token->setCreatedAt(new \DateTime('now'));
-                    $token->setToken();
-                } else {
-                    $token = new ResetToken();
-                    $user->setToken($token);
-                    $em->persist($token);
+                    $em->remove($token);
+                    $user->setToken(null);
                 }
+
+                $token = new ResetToken();
+                $user->setToken($token);
+                $em->persist($token);
+
                 $em->flush();
 
                 $message = \Swift_Message::newInstance()
@@ -130,32 +120,9 @@ class SecurityController extends Controller {
         if ($request->get('name', false) && $request->get('token', false))
         {
             $repository = $this->get('doctrine')->getRepository('GalvesbandTraUserBundle:User');
-
-            $fromDateTime = new \DateTime('-1 day');
-            $toDateTime = new \DateTime('now');
-
-            /**
-             * @var $user User
-             */
-            $user = $repository->createQueryBuilder('u')
-                ->innerJoin('u.token', 't')
-                ->where('u.name = :user_name')
-                ->andWhere('u.isActive = 1')
-                ->andWhere('t.createdAt > :from_datetime')
-                ->andWhere('t.createdAt < :to_datetime')
-                ->andWhere('t.token = :token')
-                ->setParameters([
-                    'user_name' => $request->get('name'),
-                    'from_datetime' => $fromDateTime,
-                    'to_datetime' => $toDateTime,
-                    'token' => $request->get('token')
-                ])
-                ->getQuery()
-                ->setMaxResults(1)
-                ->getOneOrNullResult();
-
+            $user = $repository->findByToken($request->get('name'), $request->get('token'));
             if (!$user) {
-                throw new NotFoundHttpException('No valid token was found.');
+                return $this->createNotFoundException('Parameters missing');
             }
 
             $em = $this->get('doctrine')->getManager();
@@ -165,7 +132,9 @@ class SecurityController extends Controller {
             $user->setToken(null);
 
             // Now we need to generate a random password of about 10 characters
-            $newPassword = substr(bin2hex(random_bytes(32)), 0, 10);
+            $generator = $this->get('galvesband.tra.user.security.generator.factory')
+                ->getMediumStrengthGenerator();
+            $newPassword = $generator->generateString(10);
             $user->setPlainPassword($newPassword);
 
             // Save changes
