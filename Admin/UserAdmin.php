@@ -33,9 +33,9 @@ class UserAdmin extends AbstractAdmin {
 
     protected function configureFormFields(FormMapper $formMapper)
     {
-        /** @var User $currentUser */
-        $currentUser = $this->getConfigurationPool()->getContainer()->get('security.token_storage')
-            ->getToken()->getUser();
+        $authChecker = $this->getConfigurationPool()->getContainer()->get('security.authorization_checker');
+        $isGrantedAdmin = $authChecker->isGranted('ROLE_ADMIN');
+        $isGrantedSuperAdmin = $authChecker->isGranted('ROLE_SUPER_ADMIN');
 
         $formMapper
             ->with('Basic Information', [
@@ -44,7 +44,7 @@ class UserAdmin extends AbstractAdmin {
                 ->add('name', 'text')
                 ->add('email', 'text');
 
-        if ($currentUser->hasRole('ROLE_ADMIN')) {
+        if ($isGrantedAdmin) {
             $formMapper
                 ->add('isActive')
                 ->add('groups', 'sonata_type_model', [
@@ -58,7 +58,7 @@ class UserAdmin extends AbstractAdmin {
         // Only a super-admin can mess with this field.
         // If someone tries to supply a value in a create or edit form while not logged in
         // as super-admin an error will be triggered.
-        if ($currentUser->hasRole('ROLE_SUPER_ADMIN')) {
+        if ($isGrantedSuperAdmin) {
             $formMapper
                 ->add('isSuperAdmin');
         }
