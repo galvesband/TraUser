@@ -1,27 +1,26 @@
 # TODO #
 
-## Comandos ##
+## Commands ##
 
  - AddUser
    - Validación de datos introducidos por usuario
 
-## Estética ##
+## Aesthetics ##
 
- - Pasada a login 
- - Pasada a reset-password
- - Pasada a recover-password
- - Pasada a email reset-password
+ - Pass to login 
+ - Pass to reset-password
+ - Pass to recover-password
+ - Pass to reset-password email 
    - html
    - txt
 
 ## Fixtures ##
 
- - Integrar Symfony / Doctrine / Fixtures en GalvesbandTraUserBundle
- - Preparar un set para arrancar un sitio con valores por defecto razonables
-   - SuperAdministradores: Un gran poder conlleva una gran responsabilidad y toda esa mierda
-   - Administradores: De todo menos tocar a SuperAdmins
-   - Editores: Editar cualquier cosa que no sea otro usuario
-   - Usuarios
+ - Integrate Symfony / Doctrine / Fixtures in TraUserBundle's testing
+ - Prepare a fixture to bootstrap a test site with default reasonable values
+   - SuperAdmins: a great power comes with great responsibility and all those shit.
+   - Admins: everything except touching SuperAdmins.
+   - Editors or Staffers: edit anything which is not another user.
 
 ## Tests ##
 

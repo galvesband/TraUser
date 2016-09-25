@@ -32,6 +32,7 @@
   "extra" : {
     "branch-alias" : {
       "dev-master" : "master"
-    }
+    },
+    "symfony-web-dir": "Tests/test-app/web"
   }
 }

@@ -1,25 +1,28 @@
 # TraUserBundle #
 
-Un Bundle para Symfony 3 que proporciona una implementación no demasiado complicada
-de usuarios y grupos.
+A Bundle for Symfony 3 and Sonata that provides users and groups with a security scheme.
 
-La idea es tener usuarios y grupos. Los usuarios en sí mismo no tienen permisos
-asociados, pero pertenecen a grupos, y estos si tienen permisos asociados (roles).
+The main developer of this bundle is Rafael Gálvez-Cañero (galvesband -at- gmail.com).
+Whenever you see first person used in this document, he is that person. That being said... 
 
-## Usar el proyecto ##
+What I want with these is to learn Symfony and Sonata. In the way I'm going to try to
+build a reusable User-and-Permissions bundle that I can use in my future projects.
+The background idea is to have users and groups. Users by themselves don't have permissions
+associated with them (except ROLE_SUPER_ADMIN) but belong to groups, which
+are related to roles.
 
-No lo llamaría "usable" de momento... pero en fin. Al final del `readme.md` he incluído
-unos enlaces con información que puede resultar útil. Hay varios sistemas, la cosa es
-encontrar uno que no sea un coñazo.
+## Using the bundle ##
 
-La opción más tentadora es usar `composer` y `packagist` para añadir el bundle como
-uno más y después simplemente requerirlo en los proyectos que lo necesitamos. También
-se puede añadir al `composer.json` información sobre el paquete directamente desde
-un VCS, pero eso supongo que implicaría tener acceso desde el servidor a ese VCS,
-cosa que no parece sencilla  con nuestro actual despliegue en 
-[Galvesband's](https://galvesband.ddns.info/code/).
+I'm not sure I would call it usable yet. Testing is still missing. I'm basically trying
+to learn Symfony 3 and Sonata here, so in the beginning I've been more focused into
+making things work more than by the book or modern TDD or CI. I'll work into adding tests
+soon but in the meantime I would not recommend using this.
+
+At some point I will make this available through `packagist`. Then it will be installable
+through something like this (keeping it here for future reference... for myself):
 
 ```json
+{
     "require" : {
         "SomeOther/Bundles" : "some-branch-or-version",
         "Galvesband/TraUserBundle" : "dev-master"
@@ -27,60 +30,76 @@ cosa que no parece sencilla  con nuestro actual despliegue en
     "repositories" : [{
         "type" : "vcs",
         "url" : "TBD" 
-    }],
+    }]
+}
 ```
 
-Habría que reemplazar `TBD` con la url pública del repositorio.
+# Developing TraUserBundle #
 
-# Configuración de un proyecto para desarrollo #
+I've created an embedded Symfony application into the `Tests` directory with the bundle
+fully functional. I've documented the procedure needed to make it run in 
+`CONTRIBUTING.md`.
 
-En resumen estos son los pasos:
+# Using TraUserBundle in your proyect #
 
- - Crear un proyecto Symfony vacío.
+## Requirements ##
+
+ - Symfony. I'm using the current stable release (3.1 at this point). Also I'm trying to
+   avoid use of deprecated calls as possible so that version is probably close to the 
+   minimum version needed. My goal is to update the bundle to work with recent Symfony 
+   versions up until a new LTS release of Symfony happens.
+    
+ - Sonata and friends. I'm developing with `core-bundle` 3.1, `admin-bundle` 3.6 and 
+ `doctrine-orm-admin-bundle` 3.0.
+   
+ - Ircmaxell's RandomLib, 1.2.
  
- - Descargar el código de TraUserBundle.
- 
- - Instalar y configurar en el proyecto las dependencias de TraUserBundle.
- 
- - Configurar TraUserBundle
- 
- - Configurar la conexión a la base de datos del proyecto.
- 
- - Puesta en marcha.
+Take a look into `composer.json` to see all requirements.
 
-## Proyecto para desarrollar el bundle dentro ##
+## Configuring an empty Symfony project from the start ##
 
-Hay que crear un proyecto Symfony 3.1 vacío y clonar el repositorio en 
-`src/Galvesband/TraUserBundle/`.
+Here I will list the steps neccesary to build a Symfony project from the start to get to a 
+point similar to the internal testing app. This might be usefull for future projects of mine 
+and also to document the bundle itself.
 
+ - Create a new empty Symfony project.
+ 
+ - Add and configure TraUserBundle's requirements.
+ 
+ - Add and configure TraUserBundle.
+ 
+ - Set up a database for the project.
+ 
+ - Start up.
+ 
+In what follows I will be telling you to manually add requirements to `composer.json`.
+This is probably not needed because those are already listed in TraUserBundle's `composer.json`
+file, but right now TraUserBundle is not listed in `packagist` and I'm installing it
+manually, so I've been keeping the docs this way. It will updated when possible.
+
+### Create a new empty Symfony project ###
+ 
 ```bash
-# Crear proyecto Symfony
 $ composer create-project symfony/framework-standard-edition traUser "3.1.*"
-
-# Clonar repositorio de traUser para desarrollo
-$ cd traUser/src
-$ mkdir Galvesband
-$ cd Galvesband
-$ git clone ssh://git@galvesband.ddns.info:10022/galvesband/traUser.git TraUserBundle 
 ```
 
-## Requerimientos de TraUserBundle ##
+### Add and configure TraUserBundle's requirements ###
 
-### Sonata Core Bundle ###
+#### Sonata Core Bundle ####
 
-[Referencia](https://sonata-project.org/bundles/core/master/doc/reference/installation.html).
+[Reference](https://sonata-project.org/bundles/core/master/doc/reference/installation.html).
 
-Hay que añadir a `composer.json` los siguientes requerimientos:
+First, we need to add to the `composer.json` of our project this requirements:
 
  - `sonata-project/core-bundle : "3.1.*"`
  
- - `twig/extensions : 1.3.*`, que parece ser necesario aunque no está
-   incluido en los requerimientos de SonataCoreBundle. *Parece* que la 
-   versión `1.3` funciona bien con Sonata.
+ - `twig/extensions : 1.3.*`, which seems to be needed but not included in the requirements of `sonata-core`.
+   Version 1.3 seems to work well.
 
-Hay que activar el SonataCoreBundle, añadiendo la siguiente línea al `app/AppKernel.php`:
+Then we need to enable SonataCoreBundle:
 
 ```php
+    // app/AppKernel.php
     public function registerBundles() {
         $bundles = [
             // [...]
@@ -94,37 +113,33 @@ Hay que activar el SonataCoreBundle, añadiendo la siguiente línea al `app/AppK
     }
 ```
 
-Aunque no parece necesario si no se toca la configuración por defecto, 
-puede ser buena idea incluir esto en `app/config/config.yml`:
+The default configuration for `sonata_core` seems to work fine but it is a good practice
+to add its entry in the configuration:
 
 ```yaml
+# app/config/config.yml
 sonata_core: ~
 ```
+#### Sonata Admin Bundle ####
 
-### Sonata Admin Bundle ###
+[Reference](https://sonata-project.org/bundles/admin/3-x/doc/index.html).
 
-[Referencia](https://sonata-project.org/bundles/admin/3-x/doc/index.html).
+This means actually some bundles:
 
-Esto implica varios bundles:
-
- - SonataAdminBundle: núcleo del entorno de administración de Sonata.
+ - SonataAdminBundle: the core of the administration framework of Sonata.
  
- - SonataDoctrineORMAdminBundle: integra Doctrine en Sonata. Si 
-   usaramos otro almacenamiento como Mongo o Propel habría que
-   usar otro Bundle, pero TraUser usa Doctrine. 
+ - SonataDoctrineORMAdminBundle: SonataAdminBundle supports different persistence
+   layers, but TraUserBundle is fixed on Doctrine. 
 
-Lo cual se traduce en añadir los siguientes requerimientos al proyecto Symfony:
+These translates to this lines in `composer.json`:
 
- - `"sonata-project/admin-bundle" : "3.6.*"`. Esto introducirá una serie
-   de Bundles nuevos en el proyecto, requeridos por SonataAdmin.
+ - `"sonata-project/admin-bundle" : "3.6.*"`
  
  - `"sonata-project/doctrine-orm-admin-bundle" : "3.0.*"`
+ 
+Those requirements will suck other required bundles themselves as needed.
 
-Tras ello habrá que configurar los nuevos bundles.
-
-#### Activando los Bundles ####
-
-Hay que añadir el siguiente código a `app/AppKernel.php`:
+Next is enabling and setting up the bundles. We need to touch `AppKernel.php` again:
 
 ```php
 class AppKernel extends Kernel
@@ -137,6 +152,7 @@ class AppKernel extends Kernel
             // Sonata Admin requirements
             new Sonata\CoreBundle\SonataCoreBundle(),
             new Sonata\BlockBundle\SonataBlockBundle(),
+            // This is a requirement of SonataAdminBundle, we need it too
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             
             // Sonata Admin
@@ -155,20 +171,19 @@ class AppKernel extends Kernel
 }
 ```
 
-#### Configurando los Bundle ####
-
-El administrador usa el SonataBlockBundle para ponerlo todo en bloques. Esto aparentemente
-significa que sólo tenemos que decirle al SonataBlockBundle que existe el bloque Admin, 
-o algo así, en `app/config/config.yml`.
+SonataAdminBundle uses SonataBlockBundle to render stuff in blocks. This apparently means we just
+need to inform SonataBlockBundle of the existence of some blocks:
 
 ```yaml
+# app/config/config.yml
 sonata_block:
   default_contexts: [cms]
   blocks:
+    # Main block
     sonata.admin.block.admin_list:
       contexts: [admin]
     
-    # Activar bloque de búsqueda
+    # Search results blocks
     sonata.admin.block.search_result:
       contexts:   [admin]
       
@@ -181,71 +196,53 @@ sonata_block:
     #sonata.media.block.feature_media:
 ```
 
-#### Activando Symfony translator ####
-
-SonataAdmin requiere el componente de traducción. Hay documentación 
-[aquí](http://symfony.com/doc/current/book/translation.html#book-translation-configuration).
-
-Basicamente, es ir a `app/config/config.yml` y editar o añadir lo siguiente:
+If we want internationalization (which I usually want as my clients are mainly from Spain) we should
+enable the Symfony translation component. 
+[Reference here](http://symfony.com/doc/current/book/translation.html#book-translation-configuration).
 
 ```yaml
+# app/config/config.yml
 framework:
   translator: { fallbacks: ["es_ES", "en"] } 
 ```
 
-#### Configurando el enrutado de Admin ####
-
-Hay que editar `app/config/routing.yml` y añadir lo siguiente:
-
-```yaml
-admin_area:
-  resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
-  prefix: /admin
-```
-
-Además, SonataAdminBundle genera rutas al vuelo para las clases de tipo `Admin`. Para que
-funcione hay que asegurarse de que el cargador de enrutado de SonataAdminBundle se ejecuta:
+Now, setting up Sonata's routing system:
 
 ```yaml
 # app/config/routing.yml
-
+# This sets up main Sonata's routes
+admin_area:
+  resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
+  prefix: /admin
+  
+# This one generates routes on runtime for the `Admin` classes of Sonata.
 _sonata_admin:
   resource: .
   type: sonata_admin
   prefix: /admin
 ```
 
-#### Último paso - Caché y assets ####
+#### RandomLib ####
 
-Teoricamente después de instalar bundles lo suyo es hacer esto. En
-este caso sobre todo lo de los assets.
- 
-```bash
-$ bin/console cache:clear
-$ bin/console assets:install --symlink
-```
-
-**Nota:** Recuerda que si usas PhpStorm puede convenir refrescar
-el comando Symfony en el entorno porque habrá nuevos comandos de Sonata.
-
-**Nota:** Tras esto el entorno de administración debería ser accesible en
-[localhost:8000/admin](http://localhost:8000/admin) (suponiendo que uses el
-servidor web de php).
-
-### RandomLib ###
-
-Para generar contraseñar y salts y tokens se usa 
-[RandomLib](https://github.com/ircmaxell/RandomLib), versión 1.2.*. Como 
-estamos configurando TraUserBundle a mano sin usar las dependencias de
-composer, hay que requerir en el proyecto el paquete:
+TraUserBundle leverages on [RandomLib](https://github.com/ircmaxell/RandomLib), versión 1.2.*
+to generate reset-password tokens and password when a random one is needed. Add this to 
+`composer.json`.
 
  - `"ircmaxell/random_lib":"1.2.*"`
 
-## Configurando TraUserBundle ##
+### Add and configure TraUserBundle ###
 
-Lo siguiente es configurar Symfony para que use traUserBundle.
+In the furute TraUserBundle will (probably) be available through `packagist`. In the mean time
+we need to clone its repository manually some place our project will work with. There are several options:
 
-### Activando el bundle ###
+ - Clone elsewhere and link into the project OR clone directly into the project (maybe as a git sub-module).
+ 
+ - Set it up in `src/Galvesband/TraUserBundle` OR in `vendor/Galvesband/TraUserBundle`. I think it will
+   work well in both places. 
+ 
+Whatever you do, this are the steps needed to make Sonata and TraUserBundle work together.
+
+#### Enabling the bundle ####
  
  ```php
      public function registerBundles() {
@@ -265,16 +262,17 @@ Lo siguiente es configurar Symfony para que use traUserBundle.
      }
  ```
 
-### Importando la configuración y el enrutado ###
+#### Importing configuration and routing ####
 
- - Configuración
+ - Configuration:
 
 ```yaml
+# app/config/config.yml
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
-    # Cargar servicios de TraUserBundle:
+    # TraUserBundle's services
     - { resource: "@GalvesbandTraUserBundle/Resources/config/services.yml" }
 
 # [...]
@@ -288,49 +286,47 @@ doctrine:
         dbname:   "%database_name%"
         user:     "%database_user%"
         password: "%database_password%"
-        # Si es posible (MySQL o MariaDB son versiones razonablemente recientes)
-        # usar utf8mb4 como collation (soporte unicode de 4 bytes)
+        # Symfony and MySQL good practice: recent versions of MariaDB and MySQL supports
+        # utf8mb4 collation, which supports 4 bytes unicode
         charset:  utf8mb4
         default_table_options:
             charset: utf8mb4
             collate: utf8mb4_unicode_ci
 ```
 
- - Importar enrutado del bundle
+ - Routing
  
 ```yaml
+# app/config/routing.yml
 galvesband_tra_user:
     resource: "@GalvesbandTraUserBundle/Controller/"
     type:     annotation
-    # Usar el prefijo que convenga para el desarrollo y testeo
+    # Use the prefix you want
     prefix:   /admin
 ```
 
-### Seguridad: autentificando con TraUserBundle ###
+#### Security: Authenticating with TraUserBundle ####
 
-Esta parte es muy importante. Hay que hacer varias cosas, algunas específicas
-para el TraUserBundle y otras que habría que hacerlas para cualquier proyecto
-basado en Sonata.
+This is a quite important step. Some of the next actions are specific for
+TraUserBundle and others are needed by anything based upon Sonata.
 
-#### Encoder y proveedor de usuarios ####
+##### Password hasher and user provider #####
 
-Esto es específico de TraUserBundle o de cualquier bundle que proporcione 
-usuarios.
-
-Se trata de establecer el hasher de contraseñas, por un lado. 
+Specific for TraUserBundle or any bundle that provides users. We need to
+set up the hasher for password on one side: 
 
 ```yml
-# security.yml
+# app/config/security.yml
 security:
   encoders:
     Galvesband\TraUserBundle\Entity\User: bcrypt
     # [...]
 ```
 
-Y por el otro, definir un proveedor de usuarios:
+On the other side we need to set up our user provider:
 
 ```yml
-# security.yml
+# app/config/security.yml
 security:
   # [...]
   providers:
@@ -341,58 +337,59 @@ security:
   # [...]
 ```
 
-#### Firewalls ####
+##### Firewalls #####
 
-Esto hay que hacerlo en todo proyecto, se trate de TraUserBundle o no. Por supuesto
-varía de un bundle de usuarios a otro y de la naturaleza y diseño del sitio. Aquí
-muestro un buen ejemplo típico.
+This is configuration step needed in any Symfony project. It is where we tell Symfony
+where we need authenticated users and where we allow anonymous one, and it also tells
+symfony where the authenticated users are allowed and where not.
 
-Por lo general se trata de permitir acceso anónimo a la parte general del sitio
-y requerir autentificación para la parte de administración.
+This of course is very different from project to project, independently of TraUserBundle.
+The next bits implements a tipical example. Usually we need anonymous access to the public
+parts of the site and require authentication for the administration zone.
 
 ```yml
-# security.yml
+# app/config/security.yml
 security:
   # [...]
   firewalls:
-      # No requiere autentificación para recursos de desarrollo
+      # Don't require authentication for development related assets
       dev:
           pattern: ^/(_(profiler|wdt)|css|images|js)/
           security: false
     
-      # Permite a usuarios no identificados acceso al login
+      # Allows anonymous users to the admin's login route
       login_firewall:
           pattern: ^/admin/login$
           anonymous: ~
     
-      # Zona de administración
+      # Admin zone firewall
       admin_firewall:
-          # Todo lo que empiece por /admin
+          # Everything that begins with /admin
           pattern: ^/admin
-          # Utilizamos el formulario de login de TraUserBundle
+          # Use the login form from TraUserBundle
           form_login:
-              # Estas rutas estan definidas en el archivo de enrutado de TraUserBundle
+              # The following routes are from TraUserBundle
               login_path: /admin/login
               check_path: /admin/login_check
               csrf_token_generator: security.csrf.token_manager
-              # Redirige al dashboard tras identificar con éxito.
-              # Si el usuario acabó en el login redirigido desde una url protegida,
-              # tras el login irá a la url protegida.
+              # Redirects to Sonata's dashboard after a successful authentication.
+              # If the user ended up in the login form redirected from a protected url
+              # he will be redirected to that initial url after a successfull login.
               default_target_path: sonata_admin_dashboard
-          # Indicamos cómo cerrar sesión al componente de seguridad.
+          # Tell security component how to close a session
           logout:
               invalidate_session: false
               path: /admin/logout
               target: /
-          # Establecemos nuestro proveedor de usuarios en el firewall
+          # Set up our user provider for this firewall
           provider: tra_user_provider
     
-      # El sitio principal (todo lo demás)
+      # Everything else
       main:
           anonymous: ~
   
-  # Aquí definimos los roles necesarios para que se permita el acceso.
-  # Dependiendo del sitio esto puede cambiar, pero por lo general con esto basta.
+  # Here we define the needed roles to be allowed in different urls. It is the first
+  # security layer.
   access_control:
       - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
       - { path: ^/admin,       roles: ROLE_SONATA_ADMIN }
@@ -400,65 +397,65 @@ security:
   # [...]
 ```
 
-#### Jerarquía de roles ####
+##### Role hierarchy #####
 
-Esta es la parte más peliaguda. Además, puede cambiar dependiendo del esquema de
-seguridad que se quiera implementar en el proyecto Symfony concreto.
+This a very TraUserBundle and Sonata specific step and depends entirely on the security
+scheme you want to implement in the application.
 
-Le podemos decir a Sonata qué acciones del CRUD de un determinado modelo o entidad 
-puede o no hacer un usuario a través de los ROLES. Cambiando esto y la configuración 
-de grupos y roles en la base de datos tendremos esquemas de seguridad totalmente 
-diferentes.
+We can tell Sonata which actions from the CRUD controller of a given entity or
+model can the user do or not based on ROLES. Changing this and the group and role
+configuration in TraUserBundle will change the security in very different ways.
 
-Esta parte es una WIP; aún no tengo claro como permitir a un usuario acceder a
-un formulario personalizado de cambio de contraseña, por ejemplo, y cosas así.
-Pero a la hora de requerir roles sobre acciones de un CRUD, la cosa va así:
+Here a showcase a particular scheme that I think will be useful in my future projects:
 
- - Hay que decirle a Sonata que cambie su manejador de seguridad de `noop`
-   (permite a cualquier usuario hacer cualquier cosa) a otro. En el ejemplo
-   que voy a desarrollar aquí voy a usar roles.
+ - We need to tell Sonata which security handler we want. By default it uses `noop`,
+   which basically allows everything. It supports two main schemes: `role` and `acl`.
+   `acl` is too much for my projects and `roles` fit almost perfectly. TraUserBundle
+   provides a few new security handlers that modify slightly the behaviour of `role`
+   and are the ones being used in this example.
 
- - Hay que quedarse con el nombre del servicio que proporciona la clase `Admin`
-   a sonata. En GalvesbandTraUserBundle, en el caso de los usuarios, es
-   `galvesband.tra.user.admin.user`. Se pueden ver en el archivo
-   `TraUserBundle/resources/config/services.yml`
+ - The roles used by Sonata will be derived for a particular entity CRUD from the
+   name of the service that provides the `Admin` class for that entity. You can
+   peek those in `TraUserBundle/resources/config/services.yml`. 
    
- - Hay que convertir ese nombre de servicio en "prefijo de rol". Siguiendo con 
-   el ejemplo de los usuarios sería `ROLE_GALVESBAND_TRA_USER_ADMIN_USER_`.
-   
- - A ese "prefijo de rol" se le puede concatenar cualquiera de los siguientes 
-   sufijos para formar el rol necesario para realizar una acción: `CREATE`
-   `EDIT`, `DELETE`, `EXPORT`, `LIST`, `SHOW` y `VIEW`.
+ - The actual roles user by sonata will be prefixed uppercasing the service name.
+   For example, for the `User` entity the `Admin` class is provided by the service 
+   `galvesband.tra.user.admin.user`, so the prefix will be something like
+   `ROLE_GALVESBAND_TRA_USER_ADMIN_USER_`.
+ 
+ - After that prefix one of the following strings can be concatenated to build
+   a full role: `CREATE` `EDIT`, `DELETE`, `EXPORT`, `LIST`, `SHOW` and `VIEW`.
 
- - Por último, hay que crear una jerarquía de roles con esto en mente y que unifique
-   los permisos de todos los bundles de Sonata en un esquema de seguridad para toda
-   la aplicación.
+ - Lastly, we need to create a role hierarchy with all this sub-roles in mind that
+   unifies permissions for all the bundles that work under Sonata in a coordinated
+   security scheme.
    
-Por ejemplo:
+An example for roles without our custom handlers yet:
 
- - En la configuración de SonataAdmin:
+ - In SonataAdmin configuration:
  
 ```yml
+# app/config/config.yml
 sonata_admin:
     security:
-        # Usar roles para decidir si un usuario tiene acceso a una determinada acción del CRUD.
+        # Use roles to decide if an user has access to a given CRUD action
         handler: sonata.admin.security.handler.role
 ```
 
- - En `security.yml` hay que definir una jerarquía de roles deacuerdo a lo mencionado
-   más arriba:
+ - And a role hierarchy following the upper rules. We want to allow USER read
+   access to everything, ADMIN to be able to edit users and groups and 
+   ROLESADMIN to be able to edit roles:
 
 ```yml
+# app/config/security.yml
 security:
     # [...]
     
-    # Por conveniencia recogemos aquí los roles de acceso a usuarios, grupos y roles
-    # Y los condensamos en 3 perfiles básicos: USER, ADMIN y ROLESADMIN
+    # For convenience we group here roles for users, groups and roles entities into
+    # 3 big profiles: USER, ADMIN and ROLESADMIN.
     role_hierarchy:
-        # Por conveniencia recogemos aquí los roles de acceso a usuarios, grupos y roles
-        # Y los condensamos en 3 perfiles básicos: USER, ADMIN y ROLESADMIN
         ROLE_GALVESBAND_TRA_USER_USER:
-            # Un USER podrá listar y ver detalles de everything (usuarios, grupos y roles)
+            # An USER will be able to list and see details of everything (users, groups and roles)
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_LIST
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_VIEW
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_SHOW
@@ -472,7 +469,7 @@ security:
             - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_SHOW
             - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EXPORT
         ROLE_GALVESBAND_TRA_USER_ADMIN:
-            # Un ADMIN podrá crear, editar y borrar usuarios y grupos, pero no roles
+            # An ADMIN will be able to create, edit and delete users and groups, but not roles
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_CREATE
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_EDIT
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_DELETE
@@ -480,88 +477,85 @@ security:
             - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_EDIT
             - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_DELETE
         ROLE_GALVESBAND_TRA_USER_ROLESADMIN:
-            # Un ROLESADMIN podrá crear, editar y borrar roles
+            # A ROLESADMIN will be able to create, edit and delete roles
             - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_CREATE
             - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EDIT
             - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_DELETE
 
-        # A continuación definimos los auténticos roles que usará la aplicación.
-        # En este esquema de ejemplo tendremos usuarios normales (staff), administradores
-        # y super-admins. La idea es que haya usuarios que puedan trabajar en la zona de
-        # administración sin tocar las cuentas de otros usuarios (STAFF). Los administradores
-        # serán tipicamente los "dueños" del sitio. Podrán crear, editar y borrar usuarios.
-        # Los super-admins podrán además modificar los roles.
-
-        # Los que tengan Staff podrán entrar en la zona de administración (ROLE_SONATA_ADMIN)
-        # y podrán listar y ver usuarios, grupos y roles.
+        # Now we define the real roles the group entities will use (through the role entities).
+        # In this example scheme we will have normal users (staff), admins and super-admins.
+        # We want users to be allowed to enter in the admin zone and edit the site's content
+        # but not screwing up with other users accounts. Admins will ussually be the "owners" or
+        # clients of the site. They will be able to create, edit and delete users and groups.
+        # Finally, super-admins are allowed to modify the role entities, which in the end map
+        # what a group can do.
+        
+        # Staffers will be allowed into Admin zone (ROLE_SONATA_ADMIN) and can list and 
+        # see users, groups and roles.
         ROLE_STAFF: [ROLE_SONATA_ADMIN, ROLE_USER, ROLE_GALVESBAND_TRA_USER_USER]
-        # Los administradores podrán crear, editar y borrar usuarios y grupos.
+        # Admins will be able to create, edit and delete users and groups
         ROLE_ADMIN: [ROLE_STAFF, ROLE_GALVESBAND_TRA_USER_ADMIN]
-        # Los super-administradores podrán además crear, editar y borrar roles.
+        # SuperAdmins in addition will be able to create, edit and delete roles
         ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_GALVESBAND_TRA_USER_ROLESADMIN, ROLE_ALLOWED_TO_SWITCH]
 ```
 
-Aún quedan cosas por hacer. Por ejemplo, un ROLE_ADMIN es capaz de crear o eliminar 
-ROLE_SUPER_ADMINs. O asignar roles SUPER_ADMIN a otro usuario. Para paliar esto 
-estoy escribiendo mis propios manejadores de seguridad de Sonata. Todo lo de a
-continuación es un WIP.
-
-Para usarlos hay que poner esto en la configuración de sonata_admin:
+But there is still some stuff missing. A ROLE_ADMIN will be able to create or delete a 
+ROLE_SUPER_ADMIN, or assign ROLE_SUPER_ADMIN to other user. To work around this I writed
+a few custom security handlers. To use them we need to make the following changes to the previous
+security configuration:
 
 ```yml
+# app/config/config.yml
 sonata_admin:
   # [...]
   security:
+    # Our security handler 
     handler: galvesband.tra.user.security.handler.per_model_handler
 ```
 
-Ese handler representa un servicio proporcionado por GalvesbandTraUserBundle.
-Es muy simple: aplica un `security handler` u otro dependiendo de la clase
-que se esté administrando. Si no tiene configuración para la clase sobre la
-que se le pide permisos actua como el clásico manejador de seguridad por roles.
+That handler service is provided by TraUserBundle and is very simple. It relies on
+other security handlers to decide it some action is allowed, based on the type
+of the object being secured. Internally has a map of handler's name and handlers
+on one hand and a map of type's name and handler's name on the other so when
+he need to decide if a given action is allowed for some object it matches the object's
+type with a handler's name and then the name to a handler, deriving the inquiry to it.
+If no handler is found for that particular type it uses the `role` security handler
+as a fall-back.
 
-Lo que queda para que funcione es darle la configuración de manejadores de 
-seguridad que tiene que usar para según qué clases. En principio la definición
-del servicio le configura como posibilidades el manejador _noop_, el de
-_roles_ y dos nuevos: _user_ y _group_ (propios). Hay que añadir al
-`config.yml` algo como esto:
+So this handler allows us to use a different handler for different entities or admins.
+If we don't set up a handler for a particular type it will act as the `role` security
+handler. What we lack is custom security handlers that disallow some actions when the
+object secured is UserAdmin, User, GroupAdmin or Group, which are the ones which need
+special rules.
+
+The only thing we need to make it work after that is to provide our per-sole handler
+with the map of types and handlers. The service definition sets up a parameter for that, 
+so to set it up we need to add this to our configuration:
 
 ```yml
-# config.yml
+# app/config/config.yml
 parameters:
     # [...]
     galvesband.tra.user.admin.security.handler_map:
-        # Este es el único necesario porque por defecto usa role.
-        # Es probable que en el futuro haya más handlers de seguridad
-        # personalizados para grupos y roles.
+        # If object is User or UserAdmin use our user security handler
         'Galvesband\TraUserBundle\Entity\User': user
         'Galvesband\TraUserBundle\Admin\UserAdmin': user
+        # If object is Group or GroupAdmin use our group security handler
         'Galvesband\TraUserBundle\Entity\Group': group
         'Galvesband\TraUserBundle\Admin\GroupAdmin': group
-        'Galvesband\TraUserBundle\Entity\Role': role
-        'Galvesband\TraUserBundle\Admin\RoleAdmin': role
 ```
 
-La idea que intentan implementar esto es que podamos aplicar un handler de 
-seguridad por modelo o clase de administración. Y para TraUserBundle,
-queremos que un usuario que no sea ROLE_SUPER_ADMIN NO pueda modificar o crear
-usuarios ROLE_SUPER_ADMIN. A su vez será necesario que no pueda modificar o
-crear un grupo que tenga ROLE_SUPER_ADMIN. Y solo un ROLE_SUPER_ADMIN debe poder
-editar la tabla de roles.
+See the definition of the per-role security handler service in 
+`Galvesband/TraUserBundle/resources/config/services.yml` for more information. 
 
-Aún estoy en ello. 
+##### All together #####
 
-#### Todo junto ####
-
-A continuación una versión de `security.yml` con todo lo discutido, como referencia.
+Next is a version of `security.yml` with everything discussed up, as reference.
 
 ```yaml
 security:
     role_hierarchy:
-        # Por conveniencia recogemos aquí los roles de acceso a usuarios, grupos y roles
-        # Y los condensamos en 3 perfiles básicos: USER, ADMIN y ROLESADMIN
         ROLE_GALVESBAND_TRA_USER_USER:
-            # Un USER podrá listar y ver detalles de everything (usuarios, grupos y roles)
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_LIST
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_VIEW
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_SHOW
@@ -575,7 +569,6 @@ security:
             - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_SHOW
             - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EXPORT
         ROLE_GALVESBAND_TRA_USER_ADMIN:
-            # Un ADMIN podrá crear, editar y borrar usuarios y grupos, pero no roles
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_CREATE
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_EDIT
             - ROLE_GALVESBAND_TRA_USER_ADMIN_USER_DELETE
@@ -583,24 +576,12 @@ security:
             - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_EDIT
             - ROLE_GALVESBAND_TRA_USER_ADMIN_GROUP_DELETE
         ROLE_GALVESBAND_TRA_USER_ROLESADMIN:
-            # Un ROLESADMIN podrá crear, editar y borrar roles
             - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_CREATE
             - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_EDIT
             - ROLE_GALVESBAND_TRA_USER_ADMIN_ROLE_DELETE
 
-        # A continuación definimos los auténticos roles que usará la aplicación.
-        # En este esquema de ejemplo tendremos usuarios normales (staff), administradores
-        # y super-admins. La idea es que haya usuarios que puedan trabajar en la zona de
-        # administración sin tocar las cuentas de otros usuarios (STAFF). Los administradores
-        # serán tipicamente los "dueños" del sitio. Podrán crear, editar y borrar usuarios.
-        # Los super-admins podrán además modificar los roles.
-
-        # Los que tengan Staff podrán entrar en la zona de administración (ROLE_SONATA_ADMIN)
-        # y podrán listar y ver usuarios, grupos y roles.
         ROLE_STAFF: [ROLE_SONATA_ADMIN, ROLE_USER, ROLE_GALVESBAND_TRA_USER_USER]
-        # Los administradores podrán crear, editar y borrar usuarios y grupos.
         ROLE_ADMIN: [ROLE_STAFF, ROLE_GALVESBAND_TRA_USER_ADMIN]
-        # Los super-administradores podrán además crear, editar y borrar roles.
         ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_GALVESBAND_TRA_USER_ROLESADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     encoders:
@@ -643,77 +624,76 @@ security:
 
 ```
 
-#### Bloque de ussuario logeado ####
+##### Logged in user block in Sonata's admin zone #####
 
-Esto es para que cuando se identifique alguien en la parte de administración, arriba a la derecha
-se muestre algún enlace interesante para el usuario como acceso al propio perfil o cerrar sesión.
+In Sonata everything is ready to work with the SonataUserBundle, which is awesome, but we need to
+set up an special entry in sonata's configuration to tell it to use the user block from
+TraUserBundle or we won't see anything in the top menu where the user menu is expected.
+To do that modify the configuration of sonata like this:
 
 ```yml
-# config.yml
+# app/config/config.yml
 sonata_admin:
     templates:
         user_block: GalvesbandTraUserBundle:blocks:user_block.html.twig
 ```
 
-#### Correo ####
+##### Mail #####
 
-TraUserBundle puede enviar correos para permitir a un usuario que ha
-olvidado su contraseña acceder al sistema o recuperar la contraseña.
-Para eso necesita que _SwiftMailer_ este correctamente configurado.
-
-En lo que respecta a desarrollo, sin embargo, no es necesario hacer
-mucho; basta con descomentar una línea de `config_dev.yml`:
+TraUserBundle uses email to allow an user that has forgotten its password to generate
+a new random one. For that it need _SwiftMailer_ to be correctly set up. For development,
+it is enough to set this up:
 
 ```yml
+# app/config/config_dev.yml
 swiftmailer:
     disable_delivery: true
 ```
 
-Con esta opción los correos no serán enviados realmente pero se los podrá
-inspeccionar a traves de la barra de depuración. También existe la 
-opción `delivery_address: me@example.com` de forma que el correo acabe
-siempre en esa dirección.
+With this configuration email will not be really sent but will be accessible through
+Symfony's profiler and debug bar. There is also an option to set up a forced
+delivery address: `delivery_address: me@example.com`.
 
-## Configurando la conexión a la base de datos ##
 
-Por último, hay que configurar la conexión de base de datos del proyecto.
-Lo que yo personalmente suelo hacer es usar `docker`:
+### Set up a database for the project ###
 
- - Crear directorio en algún lugar, da igual dónde (yo suelo usar
- un subdirectorio `docker` dentro del proyecto Symfony) llamado (por ejemplo) 
- `traUser-database-only` y dentro un archivo con nombre `docker-compose.yml` 
- con el siguiente contenido:
+What I usually do in development is use `docker-compose`. I create a directory `docker`
+somewhere, usually inside the Symfony project, and inside another one called
+`traUser-database-only` or something like that with a `docker-compose.yml` file
+like this:
  
 ```yaml
 version: '2'
 
-# Un único contenedor para proveernos de una base de datos 
+# A single container with the database server
 services:
 db:
  image: mariadb:10.1
  volumes:
-   # Guardamos los volúmenes de la base de datos en ./data.
-   # Borra el directorio para resetear las bases de datos
+   # Database data in a local file-system volume.
+   # Delete the directory to reset the database
+   # (or... you know, drop and recreate the database)
    - "./data/db:/var/lib/mysql"
  restart: always
  environment:
-   # Datos de conexión
+   # Conecction information
    MYSQL_ROOT_PASSWORD: changeme
    MYSQL_USER: traUser_user
    MYSQL_PASSWORD: traUser_pwd
    MYSQL_DATABASE: traUser_db
  ports:
-   # Acceso a la base de datos a través de localhost:3306
+   # Database access through localhost:3306
    - "127.0.0.1:3306:3306"
 ```
  
- - cambiar a ese directorio y ejecutar:
+ - Switch to that directory and do:
   
 ```bash
 $ docker-compose up -d
 ```
 
- - Configurar Symfony creando o editando el archivo `app/config/parameters.yml` con estos parámetros:
+ - Configure Symfony by creating or editing `app/config/parameters.yml` with this parameters
+   (change it to your database if you are not using my docker solution):
 
 ```yaml
 parameters:
@@ -726,37 +706,32 @@ parameters:
     mailer_host: 127.0.0.1
     mailer_user: null
     mailer_password: null
-    # Cambiar por algo aleatorio
+    # Put something *random* here
     secret: blahblah-some-secret
 ```
 
-Ya esta todo. Lo que queda son los pasos que habría que seguir en todo
-proyecto Symfony para crear/actualizar el esquema de la base de datos, 
-etcétera:
+And that's it. All that is left is a couple calls standard to any Symfony project.
+
+### Start up ###
 
 ```bash
+# First time
 $ php bin/console doctrine:schema:create
+# Or updating the schema
+$ php bin/console doctrine:schema:update --force
+
+$ Importing assets to web directory
+$ php bin/console assets:install --symlinks
+
+# Start php development server
+$ php bin/console server:start
 ```
 
-## Lanzando el proyecto ##
-
-Con la base de datos andando, lo mejor es usar el servidor de desarrollo
-de php, lo que es muy fácil porque hay un comando de Symfony para ello:
+The application should be accsible through 
+[localhost:8000](http://localhost:8000). Go to `/admin/login` to see the login form.
+Users, groups and roles are empty. To add an user user the command provided by
+TraUserBundle:
 
 ```bash
-$ app/console server:start
+$ php bin/console galvesband_tra_user:add_command MyUserName my-email@somehost.com password
 ```
-
-La aplicación debe estar disponible en 
-[localhost:8000](http://localhost:8000).
-
-## Referencia ##
-
- - Método de trabajo: 
-   http://stackoverflow.com/questions/21523481/symfony2-creating-own-vendor-bundle-project-and-git-strategy
-   
- - Configuración de un usuario a mano:
-   http://symfony.com/doc/3.1/security/entity_provider.html
-
- - Tutorial sobre crear un user bundle simplón (parecido a este en un momento dado):
-   https://github.com/ponceelrelajado/loginBundle
