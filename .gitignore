@@ -1,9 +1,9 @@
 Tests/test-app/app/config/parameters.yml
 /Tests/test-app/build/
 /php_unit.xml
-/Tests/test-app/app/var/*
-!/Tests/test-app/app/var/cache
-/Tests/test-app/app/var/cache/*
+/Tests/test-app/var/*
+!/Tests/test-app/var/cache
+/Tests/test-app/var/cache/*
 !/Tests/test-app/var/cache/.gitkeep
 !/Tests/test-app/var/logs
 /Tests/test-app/var/logs/*
@@ -13,5 +13,7 @@ Tests/test-app/app/config/parameters.yml
 !/Tests/test-app/var/sessions/.gitkeep
 /vendor/
 /Tests/test-app/web/bundles
+composer.lock
+.idea/
 *.*~
 

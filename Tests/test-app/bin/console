@@ -24,6 +24,7 @@ if ($debug) {
     Debug::enable();
 }
 
+include_once __DIR__."/../app/AppKernel.php";
 $kernel = new AppKernel($env, $debug);
 $application = new Application($kernel);
 $application->run($input);
