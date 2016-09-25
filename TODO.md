@@ -16,12 +16,14 @@
 
 ## Fixtures ##
 
- - Integrate Symfony / Doctrine / Fixtures in TraUserBundle's testing
- - Prepare a fixture to bootstrap a test site with default reasonable values
-   - SuperAdmins: a great power comes with great responsibility and all those shit.
-   - Admins: everything except touching SuperAdmins.
-   - Editors or Staffers: edit anything which is not another user.
+ - Integrate Symfony / Doctrine / Fixtures in TraUserBundle's testing, 
+   see [LiipFuncitonalTestBundle](https://github.com/liip/LiipFunctionalTestBundle).
 
 ## Tests ##
 
  - All
+   - Funcional
+     - Login
+     - Logout
+     - All forgot password use case
+     - 

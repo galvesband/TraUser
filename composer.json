@@ -12,15 +12,16 @@
   ],
   "require" : {
     "sonata-project/core-bundle" : "3.1.*",
-    "twig/extensions": "v1.3.*",
-    "sonata-project/admin-bundle": "3.6.*",
-    "sonata-project/doctrine-orm-admin-bundle": "3.0.*",
-    "ircmaxell/random-lib": "1.2.*"
+    "twig/extensions" : "v1.3.*",
+    "sonata-project/admin-bundle" : "3.6.*",
+    "sonata-project/doctrine-orm-admin-bundle" : "3.0.*",
+    "ircmaxell/random-lib" : "1.2.*"
   },
-  "require-dev": {
+  "require-dev" : {
     "symfony/framework-standard-edition" : "~3.1",
     "phpunit/phpunit" : "~5.5",
-    "sensio/generator-bundle": "^3.0"
+    "sensio/generator-bundle" : "^3.0",
+    "liip/functional-test-bundle": "~1.6"
   },
   "autoload" : {
     "psr-0" : {
