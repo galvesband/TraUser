@@ -1,0 +1,24 @@
+<!--
+ https://phpunit.de/manual/current/en/appendixes.configuration.html
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd" backupGlobals="false" colors="true" bootstrap="Tests/test-app/app/autoload.php">
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <server name="KERNEL_DIR" value="Tests/test-app/app/"/>
+    </php>
+    <testsuites>
+        <testsuite name="GalvesbandTraUserBundle test suite">
+            <directory>Tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory>src</directory>
+            <exclude>
+                <directory>src/*Bundle/Resources</directory>
+                <directory>src/*/*Bundle/Resources</directory>
+                <directory>src/*/Bundle/*Bundle/Resources</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>

@@ -47,3 +47,15 @@ $ Tests/test-app/bin/console galvesband_tra_user:add_command Rafa galvesband@gma
 ```bash
 $ Tests/test-app/bin/console server:start
 ```
+
+# Testing #
+
+Just copy phpunit.xml.dist to phpunit.xml. Also, SQLite will be needed at some point
+to do some funcional tests.
+
+PHPUnit is listed in the development requirements of TraUserBundle, so this should run
+GalvesbandTraUserBundle's test suite:
+
+```bash
+$ vendor/phpunit/phpunit/phpunit
+```

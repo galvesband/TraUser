@@ -36,9 +36,10 @@ through something like this (keeping it here for future reference... for myself)
 
 # Developing TraUserBundle #
 
-I've created an embedded Symfony application into the `Tests` directory with the bundle
-fully functional. I've documented the procedure needed to make it run in 
-`CONTRIBUTING.md`.
+I've created an embedded Symfony application inside the `Tests/test-app` directory. TraUserBundle
+is fully functional inside that application so it might be a good choice to develop the bundle.
+Information about how to make it run is listed in `CONTRIBUTING.md`. There are also instructions
+on how to run the test suite, which is based upon PHPUnit.
 
 # Using TraUserBundle in your proyect #
 
