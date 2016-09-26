@@ -3,14 +3,14 @@
 ## Commands ##
 
  - AddUser
-   - Validación de datos introducidos por usuario
+   - Validate input
 
 ## Aesthetics ##
 
  - Pass to login 
  - Pass to reset-password
  - Pass to recover-password
- - Pass to reset-password email 
+ - Pass to reset-password email
    - html
    - txt
 
