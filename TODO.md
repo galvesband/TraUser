@@ -22,8 +22,11 @@
 ## Tests ##
 
  - All
-   - Funcional
+   - Functional
      - Login
      - Logout
      - All forgot password use case
-     - 
+     - User Admin shows the right fields for SUPER_ADMIN, ADMIN and USER
+   - Unit
+     - Security handlers
+     - Whatever
