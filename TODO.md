@@ -16,14 +16,14 @@
 
 ## Fixtures ##
 
- - Integrate Symfony / Doctrine / Fixtures in TraUserBundle's testing, 
-   see [LiipFuncitonalTestBundle](https://github.com/liip/LiipFunctionalTestBundle).
+ - ~~Integrate Symfony / Doctrine / Fixtures in TraUserBundle's testing, 
+   see [LiipFuncitonalTestBundle](https://github.com/liip/LiipFunctionalTestBundle).~~
 
 ## Tests ##
 
  - All
    - Functional
-     - Login
+     - ~~Login~~
      - Logout
      - All forgot password use case
      - User Admin shows the right fields for SUPER_ADMIN, ADMIN and USER
