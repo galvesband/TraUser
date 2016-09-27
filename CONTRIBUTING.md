@@ -51,7 +51,11 @@ $ Tests/test-app/bin/console server:start
 # Testing #
 
 Just copy phpunit.xml.dist to phpunit.xml. Also, SQLite will be needed at some point
-to do some funcional tests.
+to do some funcional tests, so you better do one of the following:
+
+ - Ensure `pdo_sqlite` is enabled in `php.ini` or
+ 
+ - Change `config_test.yml` to match your database (please, don't commit it if you ever intent to do a PR to me)
 
 PHPUnit is listed in the development requirements of TraUserBundle, so this should run
 GalvesbandTraUserBundle's test suite:

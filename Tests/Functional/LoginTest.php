@@ -23,6 +23,13 @@ class LoginTest extends WebTestCase
 
     public function testLoginAction()
     {
+        // Bootstrap a database
+        $this->loadFixtures([
+            'Galvesband\TraUserBundle\Tests\Fixtures\LoadRoleData',
+            'Galvesband\TraUserBundle\Tests\Fixtures\LoadGroupData',
+            'Galvesband\TraUserBundle\Tests\Fixtures\LoadUserData',
+        ]);
+
         // Wrong user name
         // Wrong password
         // Inactive user
