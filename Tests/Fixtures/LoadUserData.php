@@ -74,6 +74,8 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
         $inactiveAdmin->setIsActive(false);
         $inactiveAdmin->setPlainPassword('inactiveadmin@not-real.net');
         $inactiveAdmin->setIsSuperAdmin(false);
+        $adminGroup->addUser($inactiveAdmin);
+        $inactiveAdmin->addGroup($adminGroup);
         $manager->persist($inactiveAdmin);
 
         $manager->flush();

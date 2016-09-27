@@ -1,6 +1,6 @@
 {
   "name" : "galvesband/tra-user-bundle",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "description" : "A simple User bundle for Sonata",
   "type" : "symfony-bundle",
   "authors" : [{

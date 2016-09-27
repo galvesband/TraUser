@@ -24,3 +24,7 @@ doctrine:
             default:
                 driver: pdo_sqlite
                 path: "%kernel.cache_dir%/test.db"
+
+# Symfony 2.5+
+liip_functional_test:
+    cache_sqlite_db: true
