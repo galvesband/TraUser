@@ -12,7 +12,6 @@
 namespace Galvesband\TraUserBundle\Tests\Functional;
 
 use DateTime;
-use Exception;
 use Galvesband\TraUserBundle\Entity\ResetToken;
 use Galvesband\TraUserBundle\Entity\User;
 use Liip\FunctionalTestBundle\Test\WebTestCase;

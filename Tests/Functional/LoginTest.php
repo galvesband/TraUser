@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+namespace Galvesband\TraUserBundle\Tests\Functional;
+
 use Doctrine\Common\DataFixtures\ReferenceRepository;
 use Galvesband\TraUserBundle\Entity\User;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
