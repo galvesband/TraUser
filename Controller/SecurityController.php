@@ -82,7 +82,7 @@ class SecurityController extends Controller {
                 $em->flush();
 
                 $message = \Swift_Message::newInstance()
-                    ->setFrom('galvesband@gmail.com')
+                    ->setFrom($this->container->getParameter('galvesband.tra_user.mail.from'))
                     ->setTo($user->getEmail())
                     ->setSubject($translator->trans('Password Recovery', [], 'GalvesbandTraUserBundle'))
                     ->setBody(
