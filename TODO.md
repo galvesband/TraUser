@@ -13,6 +13,14 @@
  - Pass to reset-password email
    - html
    - txt
+   
+## Validation ##
+
+ - Check asserts on 
+    - users
+    - groups
+    - roles
+    - tokens
 
 ## Fixtures ##
 
@@ -27,6 +35,7 @@
      - Logout
      - All forgot password use case
      - User Admin shows the right fields for SUPER_ADMIN, ADMIN and USER
+     - Deletes an user deletes its token (if it exists)
    - Unit
      - Security handlers
      - Whatever

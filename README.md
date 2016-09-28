@@ -34,6 +34,19 @@ through something like this (keeping it here for future reference... for myself)
 }
 ```
 
+### Parameters ###
+
+You need to set up the proper _from_ address that will fill the `from` field
+in emails sent from the application (for example, when an user forgot his password).
+Look at `Tests/test-app/config/parameters.yml.dist`.
+
+```yml
+# parameters.yml
+parameters:
+    # [...]
+    galvesband.tra_user.mail.from: some-address@not-real.net
+```
+
 # Developing TraUserBundle #
 
 I've created an embedded Symfony application inside the `Tests/test-app` directory. TraUserBundle

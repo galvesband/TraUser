@@ -146,6 +146,7 @@ class LoginTest extends WebTestCase
         );
         $client->followRedirect();
 
+        /** @var User $user */
         $user = self::$kernel->getContainer()->get('security.token_storage')->getToken()->getUser();
         $this->assertFalse(is_null($user));
         $this->assertTrue($user instanceof User);
