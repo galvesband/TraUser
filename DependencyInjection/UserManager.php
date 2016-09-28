@@ -55,7 +55,11 @@ class UserManager
 
     public function updateResetToken(ResetToken $token)
     {
-        $token->setToken($this->generatorFactory->getLowStrengthGenerator()->generateString(32));
+        $token->setToken(
+            $this->generatorFactory
+                ->getLowStrengthGenerator()
+                ->generateString(16, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+        );
     }
 
     public function preUpdate(PreUpdateEventArgs $event)
