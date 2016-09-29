@@ -30,6 +30,10 @@ class UserManager
         $this->generatorFactory = $generatorFactory;
     }
 
+    /**
+     * @param User $user
+     * @return \Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface
+     */
     public function getEncoder(User $user)
     {
         return $this->encoderFactory->getEncoder($user);
@@ -55,11 +59,10 @@ class UserManager
 
     public function updateResetToken(ResetToken $token)
     {
-        $token->setToken(
-            $this->generatorFactory
-                ->getLowStrengthGenerator()
-                ->generateString(16, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
-        );
+        $generator = $this->generatorFactory->getLowStrengthGenerator();
+        $newTokenString = $generator
+            ->generateString(16, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        $token->setToken($newTokenString);
     }
 
     public function preUpdate(PreUpdateEventArgs $event)
@@ -86,15 +89,5 @@ class UserManager
         if ($object instanceof ResetToken) {
             $this->updateResetToken($object);
         }
-    }
-
-    public function postLoad(LifecycleEventArgs $args)
-    {
-        $object = $args->getEntity();
-        if ((!$object instanceof User) || (!$object instanceof ResetToken)) {
-            return;
-        }
-
-        $object->setGeneratorFactory($this->generatorFactory);
     }
 }

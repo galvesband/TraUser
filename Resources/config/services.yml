@@ -40,7 +40,6 @@ services:
     tags:
       - { name: doctrine.event_listener, event: prePersist }
       - { name: doctrine.event_listener, event: preUpdate }
-      - { name: doctrine.event_listener, event: postLoad }
 
   # User security handler - Forbids actions over users with ROLE_SUPER_ADMIN to anyone not being ROLE_SUPER_ADMIN
   galvesband.tra.user.security.handler.user_security_handler:
