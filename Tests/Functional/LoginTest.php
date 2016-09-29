@@ -132,7 +132,7 @@ class LoginTest extends WebTestCase
         );
     }
 
-    public function testLoginSuccess()
+    public function testLoginSuccessAndLogout()
     {
         $client = static::makeClient();
         $loginCrawler = $client->request('GET', '/admin/login');
@@ -153,5 +153,9 @@ class LoginTest extends WebTestCase
         $this->assertFalse(is_null($user));
         $this->assertTrue($user instanceof User);
         $this->assertTrue($user->getName() === 'Admin');
+
+        // Now we check logout
+        $client->request('GET', '/admin/logout');
+        $this->assertNull(self::$kernel->getContainer()->get('security.token_storage')->getToken());
     }
 }

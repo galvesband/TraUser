@@ -32,7 +32,7 @@
  - All
    - Functional
      - ~~Login~~
-     - Logout
+     - ~~Logout~~
      - ~~All forgot password use case~~
      - User Admin shows the right fields for SUPER_ADMIN, ADMIN and USER
      - Deletes an user deletes its token (if it exists)

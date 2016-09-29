@@ -74,7 +74,7 @@ class ForgotPasswordTest extends WebTestCase
 
         $tokenRepo = self::$kernel->getContainer()->get('doctrine')->getRepository('GalvesbandTraUserBundle:ResetToken');
         $this->assertCount(
-            3, // Fixtures contains two tokens, so this means there is no new token
+            3, // Fixtures contains 3 tokens, so this means there is no new token
             $tokenRepo->findAll()
         );
 
@@ -113,7 +113,7 @@ class ForgotPasswordTest extends WebTestCase
             ->get('doctrine')
             ->getRepository('GalvesbandTraUserBundle:ResetToken');
         $this->assertCount(
-            3, // Fixtures contains two tokens, so this means there is no new token
+            3, // Fixtures contains 3 tokens, so this means there is no new token
             $tokenRepo->findAll()
         );
 
@@ -193,7 +193,7 @@ class ForgotPasswordTest extends WebTestCase
             ->get('doctrine')
             ->getRepository('GalvesbandTraUserBundle:ResetToken');
         $this->assertCount(
-            4, // Fixtures contains two tokens, so this means there is a new token
+            4, // Fixtures contains 3 tokens, so this means there is a new token
             $tokenRepo->findAll()
         );
         /** @noinspection SqlDialectInspection */
