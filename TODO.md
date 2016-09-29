@@ -34,8 +34,16 @@
      - ~~Login~~
      - ~~Logout~~
      - ~~All forgot password use case~~
-     - User Admin shows the right fields for SUPER_ADMIN, ADMIN and USER
-     - Deletes an user deletes its token (if it exists)
    - Unit
-     - Security handlers
-     - Whatever
+     - ~~Security handlers~~
+       - ~~PerClassSecurityHandler~~
+       - ~~UserSecurityHandler~~
+       - ~~GroupSecurityHandler~~
+     - Dependency Injection
+     - User Admin shows the right fields for SUPER_ADMIN, ADMIN and USER
+     
+## Release ##
+
+ - Upload to github
+ 
+ - Set up travis-ci

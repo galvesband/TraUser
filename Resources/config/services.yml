@@ -1,4 +1,9 @@
 services:
+  # Exposing RandomLib/Factory through a service
+  galvesband.tra.user.security.generator.factory:
+    class:          RandomLib\Factory
+    arguments:      ~
+
   # User administration class
   galvesband.tra.user.admin.user:
     class:          Galvesband\TraUserBundle\Admin\UserAdmin
@@ -41,25 +46,21 @@ services:
   galvesband.tra.user.security.handler.user_security_handler:
     class:          Galvesband\TraUserBundle\Security\Handler\UserSecurityHandler
     arguments:
-      authChecker:  "@security.authorization_checker"
-      superRoles:   [ ROLE_SECURITY_HANDLER ]
       tokenStorage: "@security.token_storage"
+      fallback: "@sonata.admin.security.handler.role"
 
   # Group security handler - Forbids actions over groups with ROLE_SUPER_ADMIN to anyone not being ROLE_SUPER_ADMIN
   galvesband.tra.user.security.handler.group_security_handler:
     class:          Galvesband\TraUserBundle\Security\Handler\GroupSecurityHandler
     arguments:
-      authChecker:  "@security.authorization_checker"
-      superRoles:   [ ROLE_SECURITY_HANDLER ]
       tokenStorage: "@security.token_storage"
+      fallback: "@sonata.admin.security.handler.role"
 
   # Handles security in SonataAdmin
   # Relies on other security handlers based on an instanceof check
   galvesband.tra.user.security.handler.per_model_handler:
-    class:          Galvesband\TraUserBundle\Security\Handler\PerModelSecurityHandler
+    class:          Galvesband\TraUserBundle\Security\Handler\PerClassSecurityHandler
     arguments:
-      authChecker:  "@security.authorization_checker"
-      superRoles:   [ ROLE_SUPER_ADMIN ]
       # Allowed handlers
       handlers:
         role:       '@sonata.admin.security.handler.role'
@@ -68,8 +69,3 @@ services:
         group:      '@galvesband.tra.user.security.handler.group_security_handler'
       # Relation between classes and security handlers to be applied to
       classHandlerMap: '%galvesband.tra.user.admin.security.handler_map%'
-
-  # Exposing RandomLib/Factory through a service
-  galvesband.tra.user.security.generator.factory:
-    class:          RandomLib\Factory
-    arguments:      ~

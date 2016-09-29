@@ -12,22 +12,26 @@
 namespace Galvesband\TraUserBundle\Security\Handler;
 
 use Galvesband\TraUserBundle\Entity\Group;
+use Galvesband\TraUserBundle\Entity\User;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Security\Handler\RoleSecurityHandler;
+use Sonata\AdminBundle\Security\Handler\SecurityHandlerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class GroupSecurityHandler extends RoleSecurityHandler
+class GroupSecurityHandler implements SecurityHandlerInterface
 {
     protected $tokenStorage;
+    protected $fallBackSecurityHandler;
 
-    public function __construct($authorizationChecker, array $superAdminRoles, TokenStorageInterface $tokenStorage)
+    public function __construct(TokenStorageInterface $tokenStorage, SecurityHandlerInterface $fallback)
     {
-        parent::__construct($authorizationChecker, $superAdminRoles);
         $this->tokenStorage = $tokenStorage;
+        $this->fallBackSecurityHandler = $fallback;
     }
 
     public function isGranted(AdminInterface $admin, $attributes, $object = null)
     {
+        /** @var User $user */
         $user = $this->tokenStorage->getToken()->getUser();
         $userIsSuperAdmin = $user->hasRole('ROLE_SUPER_ADMIN');
         $objectIsSuperAdmin = ($object instanceof Group && $object->hasRole('ROLE_SUPER_ADMIN'));
@@ -43,6 +47,36 @@ class GroupSecurityHandler extends RoleSecurityHandler
             }
         }
 
-        return parent::isGranted($admin, $attributes, $object);
+        return $this->fallBackSecurityHandler->isGranted($admin, $attributes, $object);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseRole(AdminInterface $admin)
+    {
+        return 'ROLE_'.str_replace('.', '_', strtoupper($admin->getCode())).'_%s';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildSecurityInformation(AdminInterface $admin)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createObjectSecurity(AdminInterface $admin, $object)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteObjectSecurity(AdminInterface $admin, $object)
+    {
     }
 }

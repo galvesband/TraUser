@@ -13,16 +13,17 @@ namespace Galvesband\TraUserBundle\Security\Handler;
 
 use Galvesband\TraUserBundle\Entity\User;
 use Sonata\AdminBundle\Admin\AdminInterface;
-use Sonata\AdminBundle\Security\Handler\RoleSecurityHandler;
+use Sonata\AdminBundle\Security\Handler\SecurityHandlerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class UserSecurityHandler extends RoleSecurityHandler
+class UserSecurityHandler implements SecurityHandlerInterface
 {
     protected $tokenStorage;
+    protected $fallBackSecurityHandler;
 
-    public function __construct($authorizationChecker, array $superAdminRoles, TokenStorageInterface $tokenStorage)
+    public function __construct(TokenStorageInterface $tokenStorage, SecurityHandlerInterface $fallbackSecurityHandler)
     {
-        parent::__construct($authorizationChecker, $superAdminRoles);
+        $this->fallBackSecurityHandler = $fallbackSecurityHandler;
         $this->tokenStorage = $tokenStorage;
     }
 
@@ -51,6 +52,36 @@ class UserSecurityHandler extends RoleSecurityHandler
             }
         }
 
-        return parent::isGranted($admin, $attributes, $object);
+        return $this->fallBackSecurityHandler->isGranted($admin, $attributes, $object);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseRole(AdminInterface $admin)
+    {
+        return 'ROLE_'.str_replace('.', '_', strtoupper($admin->getCode())).'_%s';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildSecurityInformation(AdminInterface $admin)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createObjectSecurity(AdminInterface $admin, $object)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteObjectSecurity(AdminInterface $admin, $object)
+    {
     }
 }

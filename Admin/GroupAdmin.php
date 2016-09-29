@@ -11,6 +11,7 @@
 
 namespace Galvesband\TraUserBundle\Admin;
 
+use Galvesband\TraUserBundle\Entity\Group;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -90,7 +91,7 @@ class GroupAdmin extends AbstractAdmin {
 
     public function toString($object)
     {
-        return $object instanceof \Galvesband\TraUserBundle\Entity\Group
+        return $object instanceof Group
             ? $object->getName()
             : 'Group';
     }

@@ -16,8 +16,7 @@ parameters:
         'Galvesband\TraUserBundle\Admin\UserAdmin': user
         'Galvesband\TraUserBundle\Entity\Group': group
         'Galvesband\TraUserBundle\Admin\GroupAdmin': group
-        #'Galvesband\TraUserBundle\Entity\Role': role
-        #'Galvesband\TraUserBundle\Admin\RoleAdmin': role
+        'default': role
 
 framework:
     #esi:             ~

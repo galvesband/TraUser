@@ -557,6 +557,8 @@ parameters:
         # If object is Group or GroupAdmin use our group security handler
         'Galvesband\TraUserBundle\Entity\Group': group
         'Galvesband\TraUserBundle\Admin\GroupAdmin': group
+        # We need a default entry to use when object is not one of those things
+        'default': role
 ```
 
 See the definition of the per-role security handler service in 
