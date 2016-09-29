@@ -30,7 +30,7 @@
 ## Tests ##
 
  - All
-   - Functional
+   - ~~Functional~~
      - ~~Login~~
      - ~~Logout~~
      - ~~All forgot password use case~~
@@ -39,11 +39,11 @@
        - ~~PerClassSecurityHandler~~
        - ~~UserSecurityHandler~~
        - ~~GroupSecurityHandler~~
-     - Dependency Injection
+     - ~~Dependency Injection~~
      - User Admin shows the right fields for SUPER_ADMIN, ADMIN and USER
      
 ## Release ##
 
  - Upload to github
- 
+ - Set up composer/packagist
  - Set up travis-ci

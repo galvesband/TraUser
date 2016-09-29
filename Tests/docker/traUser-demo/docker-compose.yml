@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  db:
+    image: mariadb:10.1
+    volumes:
+      - "./data/db:/var/lib/mysql"
+    restart: always
+    environment:
+       MYSQL_ROOT_PASSWORD: changeme
+       MYSQL_USER: traUser_user
+       MYSQL_PASSWORD: traUser_pwd
+       MYSQL_DATABASE: traUser_db
+
+  tra-user:
+    build: ./tra-user/
+    restart: always
+    volumes:
+      # Server our source tree to the bundle
+      - "../../../:/var/www/traUserBundle"
+    environment:
+      WAIT_FOR_IT_TIMEOUT: "240"
+      WAIT_FOR_IT_TARGET: "db:3306"
+    ports:
+      # Serve from host's port 8000
+      - "8000:80"

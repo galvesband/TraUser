@@ -16,5 +16,6 @@ Tests/test-app/app/config/parameters.yml
 composer.lock
 phpunit.xml
 .idea/
+/Tests/docker/traUser-demo/data
 *.*~
 
