@@ -7,13 +7,16 @@
         <server name="KERNEL_DIR" value="Tests/test-app/app/"/>
     </php>
     <testsuites>
-        <testsuite name="GalvesbandTraUserBundle test suite">
-            <directory>Tests</directory>
+        <testsuite name="GalvesbandTraUserBundle unit test suite">
+            <directory suffix="Test.php">Tests/Unit</directory>
+        </testsuite>
+        <testsuite name="GalvesbandTraUserBundle functional test suite">
+            <directory suffix="Test.php">Tests/Functional</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
-            <directory>src</directory>
+            <directory>.</directory>
             <exclude>
                 <directory>Resources</directory>
                 <directory>Tests</directory>

@@ -1,0 +1,20 @@
+version: '2'
+
+# Un único contenedor para proveernos de una base de datos
+services:
+  db:
+    image: mariadb:10.1
+    volumes:
+      # Guardamos los volúmenes de la base de datos en ./data.
+      # Borra el directorio para resetear las bases de datos
+      - "./data/db:/var/lib/mysql"
+    restart: always
+    environment:
+      # Datos de conexión
+      MYSQL_ROOT_PASSWORD: changeme
+      MYSQL_USER: traUser_user
+      MYSQL_PASSWORD: traUser_pwd
+      MYSQL_DATABASE: traUser_db
+    ports:
+      # Acceso a la base de datos a través de localhost:3306
+      - "127.0.0.1:3306:3306"

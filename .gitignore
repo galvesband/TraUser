@@ -17,5 +17,6 @@ composer.lock
 phpunit.xml
 .idea/
 /Tests/docker/traUser-demo/data
+/Tests/docker/database-only/data
 *.*~
 
