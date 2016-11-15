@@ -2,64 +2,27 @@
 
 TODO
 
-## Setting up the internal Symfony project for demo, development or testing ##
+At some point I will write a proper set of rules for contributing or whatever.
+Until then, just keep in mind this few things:
 
-TraUserBundle comes with a Symfony project inside its `Test` directory. It
-is useful for automatic testing, demo or development of the bundle. 
-
-To make it run you need to perform the following steps:
-
- - Fill `/Tests/test-app/app/config/parameters.yml` with the parameters
-   needed to connect to the database server. Look at README.md database instructions
-   for an example using `docker-compose`.
-
- - Install dependencies, included development ones:
+ - This is not the FOS User bundle, nor it is the Sonata User bundle. Those are
+   way more complex projects that try to address a really broad user case.
+   Here I want to keep things as simple as possible while providing enough
+   functionality to be usable in decent projects.
+   
+ - If you want to add something tell me before coding. Maybe I do not like it
+   because it adds too much mess to the bundle
+   and you end up having to choose between not using the bundle or forking
+   it entirely. Or maybe I'm working in something alike that covers your needs
+   or can be adapted with some effort.
+   
+ - Other than that, I would love to get contributions.
  
-```bash
-$ composer install
-```
-
- - Install assets in the public directory of the test application:
- 
-```bash
-$ Tests/test-app/bin/console assets:install Tests/test-app/web --symlink
-```
-
- - The first time you access the data base there is no model. You need to
-   create it first:
-
-```bash
-$ Tests/test-app/bin/console doctrine:schema:create
-# Or if it is not the first time and there are changes in the model...
-$ Tests/test-app/bin/console doctrine:schema:update --force
-```
-
- - Add a super-admin user to enter the system if you don't have one.
- 
-```bash
-$ Tests/test-app/bin/console galvesband_tra_user:add_command Rafa galvesband@gmail.com password
-```
-
- - Start the development php server. After this step, the application should
-   be available in [localhost:8000/admin](http://localhost:8000/admin). You
-   can log in with the authentication data from the user created in the previous step.
- 
-```bash
-$ Tests/test-app/bin/console server:start
-```
-
-# Testing #
-
-Just copy phpunit.xml.dist to phpunit.xml. Also, SQLite will be needed at some point
-to do some funcional tests, so you better do one of the following:
-
- - Ensure `pdo_sqlite` is enabled in `php.ini` or
- 
- - Change `config_test.yml` to match your database (please, don't commit it if you ever intent to do a PR to me)
-
-PHPUnit is listed in the development requirements of TraUserBundle, so this should run
-GalvesbandTraUserBundle's test suite:
-
-```bash
-$ vendor/phpunit/phpunit/phpunit
-```
+ - Just to be clear, I'm happy with people contributing to the bundle. I just 
+   want to avoid wasting people's time; I am writing this thing to hit a sweet
+   spot between simplicity with enough functionality and will reject pull 
+   requests I'm not happy with. More so if I'm not warned or consulted before a 
+   big code drop or something.
+   
+ - Really, I am a reasonable guy, just tell me what you want and we can probably
+   work it out.

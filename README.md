@@ -13,13 +13,13 @@ are related to roles.
 
 ## Using the bundle ##
 
-I'm not sure I would call it usable yet. Testing is still missing. I'm basically trying
+I'm not sure I would call it usable yet. Testing is an ongoing effort. I'm basically trying
 to learn Symfony 3 and Sonata here, so in the beginning I've been more focused into
-making things work more than by the book or modern TDD or CI. I'll work into adding tests
-soon but in the meantime I would not recommend using this.
+making things work more than by the book or modern TDD or CI. 
 
 At some point I will make this available through `packagist`. Then it will be installable
-through something like this (keeping it here for future reference... for myself):
+through something like this (keeping it here for future reference... for myself, but it does 
+not work (yet)):
 
 ```json
 {
@@ -51,30 +51,35 @@ parameters:
 
 I've created an embedded Symfony application inside the `Tests/test-app` directory. TraUserBundle
 is fully functional inside that application so it might be a good choice to develop the bundle.
-Information about how to make it run is listed in `CONTRIBUTING.md`. There are also instructions
+Information about how to make it run is listed in `DEVELOPMENT.md`. There are also instructions
 on how to run the test suite, which is based upon PHPUnit.
 
-# Using TraUserBundle in your proyect #
+# The Test Suite #
+
+The bundle is lately gaining a decent test suit. You can check how to run it
+in `TESTING.md`.
+
+# Using TraUserBundle in a Symfony project #
 
 ## Requirements ##
 
  - Symfony. I'm using the current stable release (3.1 at this point). Also I'm trying to
-   avoid use of deprecated calls as possible so that version is probably close to the 
-   minimum version needed. My goal is to update the bundle to work with recent Symfony 
-   versions up until a new LTS release of Symfony happens.
+   avoid use of deprecated calls whenever possible, so that version is probably close to the 
+   minimum required. My goal is to update the bundle to work with recent Symfony 
+   versions up until a new LTS release of Symfony happens. We'll see where it ends.
     
  - Sonata and friends. I'm developing with `core-bundle` 3.1, `admin-bundle` 3.6 and 
  `doctrine-orm-admin-bundle` 3.0.
    
  - Ircmaxell's RandomLib, 1.2.
  
-Take a look into `composer.json` to see all requirements.
+Take a look into `composer.json` to see all the requirements.
 
 ## Configuring an empty Symfony project from the start ##
 
-Here I will list the steps neccesary to build a Symfony project from the start to get to a 
-point similar to the internal testing app. This might be usefull for future projects of mine 
-and also to document the bundle itself.
+Here I will list the steps needed to build a Symfony project from the start to get to a 
+point similar to the internal testing app. This might be useful for future projects of mine 
+and also to document the bundle itself. These are the steps, more or less.
 
  - Create a new empty Symfony project.
  
@@ -84,12 +89,12 @@ and also to document the bundle itself.
  
  - Set up a database for the project.
  
- - Start up.
+ - Start it up.
  
 In what follows I will be telling you to manually add requirements to `composer.json`.
 This is probably not needed because those are already listed in TraUserBundle's `composer.json`
-file, but right now TraUserBundle is not listed in `packagist` and I'm installing it
-manually, so I've been keeping the docs this way. It will updated when possible.
+file, but right now TraUserBundle is not included in any `packagist` repo and I'm installing it
+manually.
 
 ### Create a new empty Symfony project ###
  
