@@ -3,9 +3,7 @@
 This is not a perfect solution, but is useful because it allows
 me to set a demo of the bundle pretty fast. The cons of this
 approach is that the project source tree is served as a volume
-to docker, which might not be ideal.
-
-So, how does it work?
+to the docker container, which is far from ideal.
 
 ## How to ##
 
@@ -33,8 +31,11 @@ But **be careful**:
    database information. THIS WILL PROBABLY MESS UP
    THE PERMISSIONS ALL OVER THE vendor AND cache DIRs. Beware.
    
+ - The file `Tests/test-app/config/parameters.yml` should
+   not exists before launching the container...
+   
 And take into account that mailing will not be available
-becouse no mail service is available to the application or
+because no mail service is available to the application or
 the image.
 
 ### Setting it up ###
@@ -42,12 +43,12 @@ the image.
 Enter in the container and add an user, install the assets, etc:
 
 ```bash
-$ docker exec -it traUser-demo_tra-user_1 /bin/bash
-# cd /var/www/traUser
+$ docker exec -it trauserdemo_tra-user_1 /bin/bash
+# cd /var/www/traUserBundle
 # Tests/test-app/bin/console doctrine:schema:create
-# Tests/test-app/bin/console galvesband:tra_user_bundle:addUser --super-admin username email@host.net password
-# Tests/test-app/bin/console Assets:install 
-# Tests/test-app/bin/console galvesband:tra_user_bundle:addUser --super-admin username email@host.net password 
+# Tests/test-app/bin/console Assets:install --symlink Tests/test-app/web/
+# Tests/test-app/bin/console galvesband_tra_user:add_command -s username email@host.net password
+# Tests/test-app/bin/console doctrine:fixtures:load --fixtures=Tests/Fixtures/LoadRoleData.php --fixtures=Tests/Fixtures/LoadGroupData.php --append
 ```
 
 The browse to `http://server-name:8000/admin/login` and use

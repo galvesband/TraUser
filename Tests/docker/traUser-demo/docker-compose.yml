@@ -16,7 +16,6 @@ services:
     build: ./tra-user/
     restart: always
     volumes:
-      # Server our source tree to the bundle
       - "../../../:/var/www/traUserBundle"
     environment:
       WAIT_FOR_IT_TIMEOUT: "240"
