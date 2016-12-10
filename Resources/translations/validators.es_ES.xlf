@@ -6,6 +6,10 @@
                 <source>The password can not be empty.</source>
                 <target>La contraseña no puede estar vacía.</target>
             </trans-unit>
+            <trans-unit id="Username already taken">
+                <source>Username already taken</source>
+                <target>El nombre de usuario esta ya en uso.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

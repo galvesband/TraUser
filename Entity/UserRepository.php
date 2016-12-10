@@ -77,4 +77,16 @@ class UserRepository extends EntityRepository
 
         return $user;
     }
+
+    public function findByName($name)
+    {
+        $user = $this->createQueryBuilder('u')
+            ->where('u.name = :user_name')
+            ->setParameter('user_name', $name)
+            ->getQuery()
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
+
+        return $user;
+    }
 }

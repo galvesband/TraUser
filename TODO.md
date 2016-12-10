@@ -1,14 +1,22 @@
 # TODO #
 
-## Commands ##
+## Command Line tools ##
 
- - AddUser
-   - Validate input
+ - ~~AddUser~~
+   - ~~Validate input~~
+ - ~~RemoveUser~~
+ - ~~AddGroup~~
+ - RemoveGroup
+   - What happens when group has users or roles?
+ - AddRole
+ - RemoveRole
+ - AddUserToGroup
+ - RemoveUserFromGroup
+ - AddGroupToRole
+ - RemoveGroupFromRole
 
 ## Aesthetics ##
 
- - Pass to login 
- - Pass to reset-password
  - Pass to recover-password
  - Pass to reset-password email
    - html
@@ -16,31 +24,15 @@
    
 ## Validation ##
 
- - Check asserts on 
-    - users
-    - groups
-    - roles
-    - tokens
-
-## Fixtures ##
-
- - ~~Integrate Symfony / Doctrine / Fixtures in TraUserBundle's testing, 
-   see [LiipFuncitonalTestBundle](https://github.com/liip/LiipFunctionalTestBundle).~~
+ - ~~Check asserts on~~ 
+   - ~~users~~
+   - ~~groups~~
+   - ~~roles~~
 
 ## Tests ##
 
  - All
-   - ~~Functional~~
-     - ~~Login~~
-     - ~~Logout~~
-     - ~~All forgot password use case~~
-   - Unit
-     - ~~Security handlers~~
-       - ~~PerClassSecurityHandler~~
-       - ~~UserSecurityHandler~~
-       - ~~GroupSecurityHandler~~
-     - ~~Dependency Injection~~
-     - User Admin shows the right fields for SUPER_ADMIN, ADMIN and USER
+   - User Admin shows the right fields for SUPER_ADMIN, ADMIN and USER
      
 ## Release ##
 

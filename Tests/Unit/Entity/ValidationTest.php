@@ -102,6 +102,19 @@ class ValidationTest extends KernelTestCase
         $errors = $this->validator->validate($group);
         $this->assertCount(1, $errors);
 
+        // description is null
+        $group = new Group();
+        $group->setName('1234');
+        $errors = $this->validator->validate($group);
+        $this->assertCount(0, $errors);
+
+        // description is empty
+        $group = new Group();
+        $group->setName('1234');
+        $group->setDescription('');
+        $errors = $this->validator->validate($group);
+        $this->assertCount(0, $errors);
+
         // valid group
         $group = new Group();
         $group->setName('MyGroup');
