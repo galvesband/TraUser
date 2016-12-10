@@ -13,6 +13,7 @@ namespace Galvesband\TraUserBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Role
@@ -32,12 +33,16 @@ class Role {
     /**
      * @var string
      * @ORM\Column(type="string", length=100, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Length(max=100, min=4)
      */
     private $name;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=50, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Regex(pattern="/(ROLE_(.)*)/", message="The role field should start with 'ROLE_'")
      */
     private $role;
 

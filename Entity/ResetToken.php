@@ -13,6 +13,7 @@ namespace Galvesband\TraUserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class ResetToken
@@ -39,6 +40,7 @@ class ResetToken
     /**
      * @var string
      * @ORM\Column(type="string", length=100)
+     * @Assert\Length(max=100, min=32)
      */
     private $token;
 
