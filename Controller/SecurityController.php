@@ -64,7 +64,7 @@ class SecurityController extends Controller {
         {
             $translator = $this->get('translator');
             $repository = $this->get('doctrine')->getRepository('GalvesbandTraUserBundle:User');
-            $user = $repository->findByNameAndEmail($request->get('username'), $request->get('email'));
+            $user = $repository->findActiveByNameAndEmail($request->get('username'), $request->get('email'));
 
             if ($user)
             {

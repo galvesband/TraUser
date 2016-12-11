@@ -63,7 +63,7 @@ class UserRepository extends EntityRepository
      * @param string $email
      * @return User|null
      */
-    public function findByNameAndEmail($name, $email)
+    public function findActiveByNameAndEmail($name, $email)
     {
         $user = $this->createQueryBuilder('u')
             ->where('u.name = :user_name')
@@ -78,6 +78,12 @@ class UserRepository extends EntityRepository
         return $user;
     }
 
+    /**
+     * Returns an user
+     *
+     * @param string $name
+     * @return User
+     */
     public function findByName($name)
     {
         $user = $this->createQueryBuilder('u')

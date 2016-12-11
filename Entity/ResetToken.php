@@ -33,7 +33,7 @@ class ResetToken
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="User", mappedBy="token")
+     * @ORM\OneToOne(targetEntity="User", mappedBy="token", cascade={"detach"})
      */
     private $user;
 

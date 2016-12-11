@@ -5,15 +5,16 @@
  - ~~AddUser~~
    - ~~Validate input~~
  - ~~RemoveUser~~
+   - ~~What happens when an user is in groups?~~
  - ~~AddGroup~~
- - RemoveGroup
-   - What happens when group has users or roles?
- - AddRole
- - RemoveRole
- - AddUserToGroup
- - RemoveUserFromGroup
- - AddGroupToRole
- - RemoveGroupFromRole
+ - ~~RemoveGroup~~
+   - ~~What happens when group has users or roles?~~
+ - ~~AddRole~~
+ - ~~RemoveRole~~
+ - ~~AddUserToGroup~~
+ - ~~RemoveUserFromGroup~~
+ - ~~AddRoleToGroup~~
+ - ~~RemoveRoleFromGroup~~
 
 ## Aesthetics ##
 
@@ -33,6 +34,7 @@
 
  - All
    - User Admin shows the right fields for SUPER_ADMIN, ADMIN and USER
+ - Commands
      
 ## Release ##
 

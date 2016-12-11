@@ -111,7 +111,7 @@ class User implements AdvancedUserInterface, \Serializable {
     private $groups;
 
     /**
-     * @ORM\OneToOne(targetEntity="ResetToken", inversedBy="user")
+     * @ORM\OneToOne(targetEntity="ResetToken", inversedBy="user", cascade={"remove"})
      * @ORM\JoinColumn(name="token_id", referencedColumnName="id")
      */
     private $token;

@@ -19,4 +19,19 @@ namespace Galvesband\TraUserBundle\Entity;
  */
 class RoleRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @param string $name
+     * @return Role
+     */
+    public function findByName($name)
+    {
+        $role = $this->createQueryBuilder('r')
+            ->where('r.name = :role_name')
+            ->setParameter('role_name', $name)
+            ->getQuery()
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
+
+        return $role;
+    }
 }
