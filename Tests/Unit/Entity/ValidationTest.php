@@ -12,11 +12,15 @@
 namespace Galvesband\TraUserBundle\Entity;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Doctrine\Common\DataFixtures\ReferenceRepository;
 
 class ValidationTest extends WebTestCase
 {
     /** @var \Symfony\Component\Validator\Validator\ValidatorInterface */
     private $validator;
+
+    /** @var  ReferenceRepository */
+    private $fixtures;
 
     protected function setUp() {
         self::bootKernel();

@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/galvesband/TraUser.svg?branch=master)](https://travis-ci.org/galvesband/TraUser)
+
 # TraUserBundle #
 
 A Bundle for Symfony 3 and Sonata that provides users and groups.
@@ -24,7 +26,6 @@ things relatively simple.
 ## Requirements ##
 
  - PHP. The bundle is being developed with PHP 7, although PHP 5.6 or later should work.
-   I'm planning on setting up CI soon.
 
  - Symfony. I'm using stable release 3.1. Also I'm trying to
    avoid use of deprecated calls whenever possible, so that version is probably close to the 
@@ -34,7 +35,8 @@ things relatively simple.
  - Sonata and friends. I'm developing with `core-bundle` 3.1, `admin-bundle` 3.6 and 
  `doctrine-orm-admin-bundle` 3.0.
    
- - Ircmaxell's RandomLib, 1.2.
+ - Ircmaxell's RandomLib, 1.2. Right now this causes a deprecation warning under PHP 7.1
+   caused by the use of `mcrypt` in RandomLib. Upstream is looking into it.
 
 You can see the complete list of requirements in `composer.json`.
 
