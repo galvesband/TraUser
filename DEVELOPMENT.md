@@ -21,7 +21,7 @@ $ composer install
 $ Tests/test-app/bin/console assets:install Tests/test-app/web --symlink
 ```
 
- - The first time you access the data base there is no model. You need to
+ - The first time you access the database there is no model. You need to
    create it first:
 
 ```bash

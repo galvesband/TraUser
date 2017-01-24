@@ -1,25 +1,50 @@
 # TraUserBundle #
 
-A Bundle for Symfony 3 and Sonata that provides users and groups with a security scheme.
+A Bundle for Symfony 3 and Sonata that provides users and groups.
 
 The main developer of this bundle is Rafael Gálvez-Cañero (galvesband -at- gmail.com).
-Whenever you see first person used in this document, he is that person. That being said... 
+Whenever you see first person used in this documentation, that's the guy. 
 
-What I want with these is to learn Symfony and Sonata. In the way I'm going to try to
-build a reusable User-and-Permissions bundle that I can use in my future projects.
-The background idea is to have users and groups. Users by themselves don't have permissions
-associated with them (except ROLE_SUPER_ADMIN) but belong to groups, which
-are related to roles.
+The initial motivation of this project is to learn Symfony and Sonata. Along the way
+I'm gonna try to build a reusable user-and-permission bundle usable in some of my future
+projects, which is this bundle. To be more precise with the idea behind the bundle, I'm
+trying to provide users, groups and roles, where groups link users and roles and roles
+provide the permissions to do stuff to the users. 
+
+Why another bundle instead of FOSUserBundle or Sonata's own UserBundle? Those bundles 
+support very different use cases and are quite flexible, which is good, but makes them
+a little bit too complex when you just want to build a simple yet dynamic web page.
+Here I'm trying to simplify a lot of things just by fixating on a single persistence
+backend (Doctrine) and limiting use-cases to just users and groups with roles. 
+
+In the future the bundle might implement some new tricks, but I'm gonna try to keep
+things relatively simple.
+
+
+## Requirements ##
+
+ - PHP. The bundle is being developed with PHP 7, although PHP 5.6 or later should work.
+   I'm planning on setting up CI soon.
+
+ - Symfony. I'm using stable release 3.1. Also I'm trying to
+   avoid use of deprecated calls whenever possible, so that version is probably close to the 
+   minimum required. My goal is to update the bundle to work with recent Symfony 
+   versions up until a new LTS release of Symfony happens. We'll see where it ends.
+    
+ - Sonata and friends. I'm developing with `core-bundle` 3.1, `admin-bundle` 3.6 and 
+ `doctrine-orm-admin-bundle` 3.0.
+   
+ - Ircmaxell's RandomLib, 1.2.
+
+You can see the complete list of requirements in `composer.json`.
+
 
 ## Using the bundle ##
 
-I'm not sure I would call it usable yet. Testing is an ongoing effort. I'm basically trying
-to learn Symfony 3 and Sonata here, so in the beginning I've been more focused into
-making things work more than by the book or modern TDD or CI. 
+I want to make this bundle available through `packagist` but until then you will need to 
+manually clone the repository or download a tarball.
 
-At some point I will make this available through `packagist`. Then it will be installable
-through something like this (keeping it here for future reference... for myself, but it does 
-not work (yet)):
+For future reference, requiring this through `packagist` will look something like this.
 
 ```json
 {
@@ -34,6 +59,10 @@ not work (yet)):
 }
 ```
 
+Skip to the section talking about creating a new empty project; there I describe the 
+configuration process of an application from start to finish in a typical fashion.
+
+
 ### Parameters ###
 
 You need to set up the proper _from_ address that will fill the `from` field
@@ -47,33 +76,21 @@ parameters:
     galvesband.tra_user.mail.from: some-address@not-real.net
 ```
 
+
 # Developing TraUserBundle #
 
 I've created an embedded Symfony application inside the `Tests/test-app` directory. TraUserBundle
 is fully functional inside that application so it might be a good choice to develop the bundle.
 Information about how to make it run is listed in `DEVELOPMENT.md`. There are also instructions
-on how to run the test suite, which is based upon PHPUnit.
+on how to run the test suite.
+
 
 # The Test Suite #
 
-The bundle is lately gaining a decent test suit. You can check how to run it
-in `TESTING.md`.
+The test suite is becoming decent lately. You can check how to run it in `TESTING.md`.
+
 
 # Using TraUserBundle in a Symfony project #
-
-## Requirements ##
-
- - Symfony. I'm using the current stable release (3.1 at this point). Also I'm trying to
-   avoid use of deprecated calls whenever possible, so that version is probably close to the 
-   minimum required. My goal is to update the bundle to work with recent Symfony 
-   versions up until a new LTS release of Symfony happens. We'll see where it ends.
-    
- - Sonata and friends. I'm developing with `core-bundle` 3.1, `admin-bundle` 3.6 and 
- `doctrine-orm-admin-bundle` 3.0.
-   
- - Ircmaxell's RandomLib, 1.2.
- 
-Take a look into `composer.json` to see all the requirements.
 
 ## Configuring an empty Symfony project from the start ##
 
@@ -91,10 +108,10 @@ and also to document the bundle itself. These are the steps, more or less.
  
  - Start it up.
  
-In what follows I will be telling you to manually add requirements to `composer.json`.
+In what follows I will tell you to manually add requirements to `composer.json`.
 This is probably not needed because those are already listed in TraUserBundle's `composer.json`
-file, but right now TraUserBundle is not included in any `packagist` repo and I'm installing it
-manually.
+file, but right now TraUserBundle is not included in any `packagist` repo and this is a
+manual installation.
 
 ### Create a new empty Symfony project ###
  
@@ -139,6 +156,8 @@ to add its entry in the configuration:
 # app/config/config.yml
 sonata_core: ~
 ```
+
+
 #### Sonata Admin Bundle ####
 
 [Reference](https://sonata-project.org/bundles/admin/3-x/doc/index.html).
@@ -241,6 +260,7 @@ _sonata_admin:
   prefix: /admin
 ```
 
+
 #### RandomLib ####
 
 TraUserBundle leverages on [RandomLib](https://github.com/ircmaxell/RandomLib), versión 1.2.*
@@ -248,6 +268,7 @@ to generate reset-password tokens and password when a random one is needed. Add 
 `composer.json`.
 
  - `"ircmaxell/random_lib":"1.2.*"`
+
 
 ### Add and configure TraUserBundle ###
 
@@ -260,6 +281,7 @@ we need to clone its repository manually some place our project will work with. 
    work well in both places. 
  
 Whatever you do, this are the steps needed to make Sonata and TraUserBundle work together.
+
 
 #### Enabling the bundle ####
  
@@ -280,6 +302,7 @@ Whatever you do, this are the steps needed to make Sonata and TraUserBundle work
          // [...]
      }
  ```
+
 
 #### Importing configuration and routing ####
 
@@ -324,10 +347,12 @@ galvesband_tra_user:
     prefix:   /admin
 ```
 
+
 #### Security: Authenticating with TraUserBundle ####
 
 This is a quite important step. Some of the next actions are specific for
 TraUserBundle and others are needed by anything based upon Sonata.
+
 
 ##### Password hasher and user provider #####
 
@@ -355,6 +380,7 @@ security:
         property: name
   # [...]
 ```
+
 
 ##### Firewalls #####
 
@@ -415,6 +441,7 @@ security:
       
   # [...]
 ```
+
 
 ##### Role hierarchy #####
 
@@ -569,6 +596,7 @@ parameters:
 See the definition of the per-role security handler service in 
 `Galvesband/TraUserBundle/resources/config/services.yml` for more information. 
 
+
 ##### All together #####
 
 Next is a version of `security.yml` with everything discussed up, as reference.
@@ -645,11 +673,12 @@ security:
 
 ```
 
+
 ##### Logged in user block in Sonata's admin zone #####
 
 In Sonata everything is ready to work with the SonataUserBundle, which is awesome, but we need to
 set up an special entry in sonata's configuration to tell it to use the user block from
-TraUserBundle or we won't see anything in the top menu where the user menu is expected.
+TraUserBundle or we won't see anything in the top menu where the user menu is exposed.
 To do that modify the configuration of sonata like this:
 
 ```yml
@@ -658,6 +687,7 @@ sonata_admin:
     templates:
         user_block: GalvesbandTraUserBundle:blocks:user_block.html.twig
 ```
+
 
 ##### Mail #####
 
@@ -697,7 +727,7 @@ db:
    - "./data/db:/var/lib/mysql"
  restart: always
  environment:
-   # Conecction information
+   # Connection information
    MYSQL_ROOT_PASSWORD: changeme
    MYSQL_USER: traUser_user
    MYSQL_PASSWORD: traUser_pwd
@@ -733,6 +763,7 @@ parameters:
 
 And that's it. All that is left is a couple calls standard to any Symfony project.
 
+
 ### Start up ###
 
 ```bash
@@ -748,11 +779,13 @@ $ php bin/console assets:install --symlinks
 $ php bin/console server:start
 ```
 
-The application should be accsible through 
+The application should be accessible through 
 [localhost:8000](http://localhost:8000). Go to `/admin/login` to see the login form.
-Users, groups and roles are empty. To add an user user the command provided by
+Users, groups and roles are empty. To add an user use the command provided by
 TraUserBundle:
 
 ```bash
-$ php bin/console galvesband_tra_user:add_command MyUserName my-email@somehost.com password
+$ php bin/console galvesband:tra-user:add-user --super MyUserName my-email@somehost.com password
 ```
+
+The you will need to set up roles and groups.

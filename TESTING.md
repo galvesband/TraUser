@@ -6,28 +6,24 @@ Pretty much composer and a recent php configured with the `pdo_sqlite` driver on
 
 ## How to ##
 
-Testing an standalone bundle is not self-evident but doable thanks to Symfony's 
-flexibility. In fact, traUser includes in its `Test` directory an entire
-symfony app almost ready to work.
-
-For testing you need to install all the requirements listed in `composer.json`,
-usually through `composer` itself. In the project directory, issue this command:
+*TraUserBundle* comes with its own embedded *Symfony* application to host the
+execution of the test suite. You just need to install the requeriments via
+`composer`:
 
 ```bash
-# Installs all requirements, including dev-require code
 $ composer install
 ```
 
 This will install a few libraries in a `vendor` subdirectory, including `php-unit`.
-It the Sqlite support is properly enabled, you just need to invoke
-`php-unit` from the project's directory without arguments and everything should
-work.
+The next step would be to execute `php-unit`. Beware that you will get an error
+if `pdo_sqlite` is not properly configured; the test-suite makes use of SQLite
+as the backend for Doctrine.
 
 ```bash
 $ vendor/bin/phpunit
 ```
 
-## But... how? ##
+## About the Embedded Application ##
 
 As stated earlier, the bundle comes with a pre-configured Symfony app inside 
 its `Tests` directory. It actually lives in `Tests/test-app` and comes with
@@ -43,12 +39,13 @@ routing to learn what urls you can check.
 
 The execution of the test suite will create a test database in the application's 
 test cache and populate it before executing a test. Thanks to the 
-`liip/functional-test-bundle` everything is pretty much magic. Also, that bundle 
-provides a *caching* feature to avoid recreating the entire database before every 
-test. It works pretty well and actually speed up the test suite execution a lot, 
-but be careful. Some tests depend on dates (like the password-recovery-token 
-feature) and the caching logic might slip an outdated test database. In those 
-cases just remove the entire testing cache directory:
+`liip/functional-test-bundle` everything is pretty much magic. 
+
+There is a catch. That bundle provides a *caching* feature to avoid recreating 
+the entire database before every test. It works pretty well and actually speed up 
+the test suite execution a lot, but be careful. Some tests depend on dates (like 
+the password-recovery-token feature) and the caching logic might slip an outdated 
+test database. In those cases just remove the entire testing cache directory:
 
 ```bash
 $ rm Tests/test-app/var/cache/test/* -R
