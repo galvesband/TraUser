@@ -11,11 +11,11 @@
 
 namespace Galvesband\TraUserBundle\Entity;
 
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 
-class ValidationTest extends KernelTestCase
+class ValidationTest extends WebTestCase
 {
-    /** @var  \Symfony\Component\Validator\Validator\ValidatorInterface */
+    /** @var \Symfony\Component\Validator\Validator\ValidatorInterface */
     private $validator;
 
     protected function setUp() {
@@ -23,6 +23,14 @@ class ValidationTest extends KernelTestCase
 
         $this->validator = static::$kernel->getContainer()
             ->get('validator');
+
+        // Bootstrap a database with some data
+        $this->fixtures = $this->loadFixtures([
+            'Galvesband\TraUserBundle\Tests\Fixtures\LoadRoleData',
+            'Galvesband\TraUserBundle\Tests\Fixtures\LoadGroupData',
+            'Galvesband\TraUserBundle\Tests\Fixtures\LoadUserData',
+            'Galvesband\TraUserBundle\Tests\Fixtures\LoadResetTokenData',
+        ])->getReferenceRepository();
     }
 
     public function testUserFieldsValidation() {
