@@ -6,7 +6,6 @@ php:
 before_script:
   - phpenv config-add Tests/test-app/app/config/php.travisci.ini
   - pecl install pdo_sqlite
-  - pecl install gd
   - pecl install mcrypt
 before_install:
   - sudo apt-get update -qq
