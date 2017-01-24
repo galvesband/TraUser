@@ -6,6 +6,8 @@ php:
 before_script:
   - phpenv config-add Tests/test-app/app/config/php.travisci.ini
   - pecl install pdo_sqlite
+  - cp Tests/test-app/app/config/parameters.yml.dist Tests/test-app/app/config/parameters.yml
+
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install sqlite3
