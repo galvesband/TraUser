@@ -8,7 +8,7 @@
     "email" : "galvesband@gmail.com"
   }],
   "keywords" : [
-    "galvesband", "user", "tratra"
+    "galvesband", "user", "tra"
   ],
   "require" : {
     "sonata-project/core-bundle" : "3.1.*",
@@ -32,9 +32,6 @@
   "target-dir" : "Galvesband/TraUserBundle",
 
   "extra" : {
-    "branch-alias" : {
-      "dev-master" : "master"
-    },
     "symfony-web-dir": "Tests/test-app/web"
   }
 }
