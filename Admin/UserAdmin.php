@@ -27,7 +27,6 @@ class UserAdmin extends AbstractAdmin {
     {
         if ($object instanceof User && $object->getIsSuperAdmin()) {
             /** @var User $currentUser */
-            /** @noinspection PhpUndefinedMethodInspection */
             $currentUser = $this->getConfigurationPool()->getContainer()->get('security.token_storage')
                 ->getToken()->getUser();
 
