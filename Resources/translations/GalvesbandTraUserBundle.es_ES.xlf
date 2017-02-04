@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="User List">
                 <source>User List</source>
-                <target>Lista de Usuarios</target>
+                <target>Usuarios</target>
             </trans-unit>
             <trans-unit id="User Create">
                 <source>User Create</source>
@@ -28,7 +28,7 @@
             </trans-unit>
             <trans-unit id="Group List">
                 <source>Group List</source>
-                <target>Lista de Grupos</target>
+                <target>Grupos</target>
             </trans-unit>
             <trans-unit id="Group Create">
                 <source>Group Create</source>
@@ -44,7 +44,7 @@
             </trans-unit>
             <trans-unit id="Role List">
                 <source>Role List</source>
-                <target>Lista de Roles</target>
+                <target>Roles</target>
             </trans-unit>
             <trans-unit id="Role Create">
                 <source>Role Create</source>
