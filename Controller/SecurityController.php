@@ -130,7 +130,7 @@ class SecurityController extends Controller {
             $repository = $this->get('doctrine')->getRepository('GalvesbandTraUserBundle:User');
             $user = $repository->findByToken($request->get('name'), $request->get('token'));
             if (!$user) {
-                throw $this->createNotFoundException('Parameters missing');
+                throw $this->createNotFoundException('Token not found.');
             }
 
             $em = $this->get('doctrine')->getManager();
