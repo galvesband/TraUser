@@ -24,15 +24,11 @@ class GroupAdmin extends AbstractAdmin {
 
     protected function configureFormFields(FormMapper $formMapper) {
         $formMapper
-            ->with('Basic Information', [
-                'class' => 'col-md-6 col-xs-12'
-            ])
+            ->with('Basic Information', ['class' => 'col-md-6 col-xs-12'])
                 ->add('name', 'text')
                 ->add('description', 'text')
             ->end()
-            ->with('Roles', [
-                'class' => 'col-md-6 col-xs-12'
-            ])
+            ->with('Roles', ['class' => 'col-md-6 col-xs-12'])
                 ->add('roles', 'sonata_type_model', [
                     'class' => 'Galvesband\TraUserBundle\Entity\Role',
                     'multiple' => true,
@@ -43,18 +39,18 @@ class GroupAdmin extends AbstractAdmin {
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-            ->add('name')
-            ->add('description')
-            ->add('users', null, [
-                'route' => [
-                    'name' => 'show'
-                ]
-            ])
-            ->add('roles', null, [
-                'route' => [
-                    'name' => 'show'
-                ]
-            ]);
+            ->with('Basic Information', ['class' => 'col-md-6 col-xs-12'])
+                ->add('name')
+                ->add('description')
+            ->end()
+            ->with('Relations', ['class' => 'col-md-6 col-xs-12'])
+                ->add('users', null, [
+                    'route' => ['name' => 'show']
+                ])
+                ->add('roles', null, [
+                    'route' => ['name' => 'show']
+                ])
+            ->end();
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper) {

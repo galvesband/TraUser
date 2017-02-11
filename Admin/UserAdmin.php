@@ -46,9 +46,7 @@ class UserAdmin extends AbstractAdmin {
         $isGrantedSuperAdmin = $authChecker->isGranted('ROLE_SUPER_ADMIN');
 
         $formMapper
-            ->with('Basic Information', [
-                'class' => 'col-md-6 col-xs-12',
-            ])
+            ->with('Basic Information', ['class' => 'col-md-6 col-xs-12'])
                 ->add('name', 'text')
                 ->add('email', 'text');
 
@@ -94,15 +92,19 @@ class UserAdmin extends AbstractAdmin {
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-            ->add('name')
-            ->add('email')
-            ->add('isActive', 'boolean')
-            ->add('isSuperAdmin')
-            ->add('groups', null, [
-                'route' => [
-                    'name' => 'show'
-                ]
-            ]);
+            ->with('Basic Information', ['class' => 'col-md-6 col-xs-12'])
+                ->add('name')
+                ->add('email')
+            ->end()
+            ->with('Administration', ['class' => 'col-md-6 col-xs-12'])
+                ->add('isActive', 'boolean')
+                ->add('isSuperAdmin')
+                ->add('groups', null, [
+                    'route' => [
+                        'name' => 'show'
+                    ]
+                ])
+            ->end();
     }
 
     public function getExportFields()
