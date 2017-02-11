@@ -24,11 +24,15 @@ class GroupAdmin extends AbstractAdmin {
 
     protected function configureFormFields(FormMapper $formMapper) {
         $formMapper
-            ->with('Basic Information')
+            ->with('Basic Information', [
+                'class' => 'col-md-6 col-xs-12'
+            ])
                 ->add('name', 'text')
                 ->add('description', 'text')
             ->end()
-            ->with('Roles')
+            ->with('Roles', [
+                'class' => 'col-md-6 col-xs-12'
+            ])
                 ->add('roles', 'sonata_type_model', [
                     'class' => 'Galvesband\TraUserBundle\Entity\Role',
                     'multiple' => true,

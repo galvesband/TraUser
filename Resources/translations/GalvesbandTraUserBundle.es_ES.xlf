@@ -100,9 +100,9 @@
                 <source>Logout</source>
                 <target>Cerrar sesión</target>
             </trans-unit>
-            <trans-unit id="See your profile">
-                <source>See your profile</source>
-                <target>Ver tu perfil</target>
+            <trans-unit id="Profile">
+                <source>Profile</source>
+                <target>Perfil</target>
             </trans-unit>
             <trans-unit id="You are logged in as %name%">
                 <source>You are logged in as %name%</source>

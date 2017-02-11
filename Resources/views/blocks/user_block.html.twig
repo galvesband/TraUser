@@ -1,27 +1,29 @@
 {% if app.user %}
-    <li role="presentation" class="dropdown-header">
+    <li class="margin dropdown-header" role="presentation">
         <i class="fa fa-user"></i>
         {{ 'You are logged in as %name%'|trans({'%name%' : app.user.name}, "GalvesbandTraUserBundle") }}
     </li>
-    <li role="presentation">
-        <a role="menuitem" tabindex="-1" href="{{ path('admin_galvesband_trauser_user_show', {'id' : app.user.id}) }}">
-            {{ 'See your profile'|trans({}, "GalvesbandTraUserBundle") }}
-        </a>
-    </li>
-    <li role="presentation">
-        <a role="menuitem" tabindex="-1" href="{{ path('admin_galvesband_trauser_user_edit', {'id' : app.user.id}) }}">
-            {{ 'Edit your profile' | trans({}, "GalvesbandTraUserBundle") }}
-        </a>
-    </li>
-    <li role="presentation">
-        <a role="menuitem" tabindex="-1" href="{{ path('logout') }}">
-            {{ 'Logout' | trans({}, "GalvesbandTraUserBundle") }}
-        </a>
+    <li class="user-footer">
+        <div class="pull-left">
+            <a class="btn btn-default btn-flat" href="{{ path('admin_galvesband_trauser_user_show', {'id' : app.user.id}) }}">
+                <i class="fa fa-user"></i>
+                {{ 'Profile'|trans({}, "GalvesbandTraUserBundle") }}
+            </a>
+        </div>
+        <div class="pull-right">
+            <a class="btn btn-default btn-flat" href="{{ path('logout') }}">
+                <i class="fa fa-close"></i>
+                {{ 'Logout' | trans({}, "GalvesbandTraUserBundle") }}
+            </a>
+        </div>
     </li>
 {% else %}
-    <li role="presentation">
-        <a role="menuitem" tabindex="-1" href="{{ path('login') }}">
-            {{ 'Identify'|trans({}, 'GalvesbandTraUserBundle') }}
-        </a>
+    <li class="user-footer">
+        <div class="pull-right">
+            <a class="btn btn-default btn-flat" href="{{ path('login') }}">
+                <i class="fa fa-user"></i>
+                {{ 'Identify'|trans({}, 'GalvesbandTraUserBundle') }}
+            </a>
+        </div>
     </li>
 {% endif %}

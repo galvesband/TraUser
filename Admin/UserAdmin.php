@@ -47,7 +47,7 @@ class UserAdmin extends AbstractAdmin {
 
         $formMapper
             ->with('Basic Information', [
-                'class' => 'col-md-6',
+                'class' => 'col-md-6 col-xs-12',
             ])
                 ->add('name', 'text')
                 ->add('email', 'text');
@@ -74,7 +74,7 @@ class UserAdmin extends AbstractAdmin {
         $formMapper
             ->end()
 
-            ->with('Authentication', ['class' => 'col-md-6'])
+            ->with('Authentication', ['class' => 'col-md-6 col-xs-12'])
                 ->add('plainPassword', 'repeated', [
                     'type' => 'password',
                     'translation_domain' => 'GalvesbandTraUserBundle',
