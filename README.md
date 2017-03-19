@@ -35,9 +35,6 @@ things relatively simple.
  - Sonata and friends. I'm developing with `core-bundle` 3.1, `admin-bundle` 3.6 and 
  `doctrine-orm-admin-bundle` 3.0.
    
- - Ircmaxell's RandomLib, 1.2. Right now this causes a deprecation warning under PHP 7.1
-   caused by the use of `mcrypt` in RandomLib. Upstream is looking into it.
-
 You can see the complete list of requirements in `composer.json`.
 
 
