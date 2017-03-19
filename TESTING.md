@@ -42,7 +42,7 @@ test cache and populate it before executing a test. Thanks to the
 `liip/functional-test-bundle` everything is pretty much magic. 
 
 There is a catch. That bundle provides a *caching* feature to avoid recreating 
-the entire database before every test. It works pretty well and actually speed up 
+the entire database before every test. It works pretty well and actually speeds up 
 the test suite execution a lot, but be careful. Some tests depend on dates (like 
 the password-recovery-token feature) and the caching logic might slip an outdated 
 test database. In those cases just remove the entire testing cache directory:

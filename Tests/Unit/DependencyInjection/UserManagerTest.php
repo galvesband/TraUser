@@ -16,8 +16,6 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Galvesband\TraUserBundle\Entity\ResetToken;
 use Galvesband\TraUserBundle\Entity\User;
-use RandomLib\Factory;
-use RandomLib\Generator;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
@@ -25,8 +23,6 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase {
 
     public function testGetEncoder()
     {
-        $generatorFactoryMock = $this->createMock(Factory::class);
-
         $userMock = $this->createMock(User::class);
         $encoderMock = $this->createMock(PasswordEncoderInterface::class);
         $encoderFactoryMock = $this->createMock(EncoderFactoryInterface::class);
@@ -35,7 +31,7 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase {
             ->with($userMock)
             ->willReturn($encoderMock);
 
-        $userManager = new UserManager($encoderFactoryMock, $generatorFactoryMock);
+        $userManager = new UserManager($encoderFactoryMock);
         $this->assertEquals(
             $encoderMock,
             $userManager->getEncoder($userMock)
@@ -44,26 +40,14 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase {
 
     public function testUpdateUser()
     {
-        $mediumStrengthGeneratorMock = $this->createMock(Generator::class);
-        $mediumStrengthGeneratorMock->expects($this->at(0))
-            ->method('generateString')
-            ->with(12)
-            ->willReturn('123456789012');
-        $generatorFactoryMock = $this->createMock(Factory::class);
-        $generatorFactoryMock->expects($this->once())
-            ->method('getMediumStrengthGenerator')
-            ->willReturn($mediumStrengthGeneratorMock);
-
         $userMock = $this->createMock(User::class);
         $userMock->expects($this->once())
             ->method('getPlainPassword')
             ->willReturn('test');
         $userMock->expects($this->once())
-            ->method('setSalt')
-            ->with('123456789012');
+            ->method('setSalt');
         $userMock->expects($this->once())
-            ->method('getSalt')
-            ->willReturn('123456789012');
+            ->method('getSalt');
         $userMock->expects($this->once())
             ->method('setPassword')
             ->with('test-pass');
@@ -73,7 +57,6 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase {
         $encoderMock = $this->createMock(PasswordEncoderInterface::class);
         $encoderMock->expects($this->once())
             ->method('encodePassword')
-            ->with('test', '123456789012')
             ->willReturn('test-pass');
         $encoderFactoryMock = $this->createMock(EncoderFactoryInterface::class);
         $encoderFactoryMock->expects($this->once())
@@ -81,32 +64,20 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase {
             ->with($userMock)
             ->willReturn($encoderMock);
 
-        $userManager = new UserManager($encoderFactoryMock, $generatorFactoryMock);
+        $userManager = new UserManager($encoderFactoryMock);
         $userManager->updateUser($userMock);
     }
 
     public function testPreUpdate()
     {
-        $mediumStrengthGeneratorMock = $this->createMock(Generator::class);
-        $mediumStrengthGeneratorMock->expects($this->at(0))
-            ->method('generateString')
-            ->with(12)
-            ->willReturn('123456789012');
-        $generatorFactoryMock = $this->createMock(Factory::class);
-        $generatorFactoryMock->expects($this->once())
-            ->method('getMediumStrengthGenerator')
-            ->willReturn($mediumStrengthGeneratorMock);
-
         $userMock = $this->createMock(User::class);
         $userMock->expects($this->exactly(2))
             ->method('getPlainPassword')
             ->willReturn('test');
         $userMock->expects($this->once())
-            ->method('setSalt')
-            ->with('123456789012');
+            ->method('setSalt');
         $userMock->expects($this->exactly(2))
-            ->method('getSalt')
-            ->willReturn('123456789012');
+            ->method('getSalt');
         $userMock->expects($this->once())
             ->method('setPassword')
             ->with('hashed-pass');
@@ -119,7 +90,6 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase {
         $encoderMock = $this->createMock(PasswordEncoderInterface::class);
         $encoderMock->expects($this->once())
             ->method('encodePassword')
-            ->with('test', '123456789012')
             ->willReturn('hashed-pass');
         $encoderFactoryMock = $this->createMock(EncoderFactoryInterface::class);
         $encoderFactoryMock->expects($this->once())
@@ -135,35 +105,22 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase {
             ->method('setNewValue')
             ->with('password', 'hashed-pass');
         $eventMock->expects($this->at(2))
-            ->method('setNewValue')
-            ->with('salt', '123456789012');
+            ->method('setNewValue');
 
-        $userManager = new UserManager($encoderFactoryMock, $generatorFactoryMock);
+        $userManager = new UserManager($encoderFactoryMock);
         $userManager->preUpdate($eventMock);
     }
 
     public function testUserPrePersist()
     {
-        $mediumStrengthGeneratorMock = $this->createMock(Generator::class);
-        $mediumStrengthGeneratorMock->expects($this->at(0))
-            ->method('generateString')
-            ->with(12)
-            ->willReturn('123456789012');
-        $generatorFactoryMock = $this->createMock(Factory::class);
-        $generatorFactoryMock->expects($this->once())
-            ->method('getMediumStrengthGenerator')
-            ->willReturn($mediumStrengthGeneratorMock);
-
         $userMock = $this->createMock(User::class);
         $userMock->expects($this->exactly(1))
             ->method('getPlainPassword')
             ->willReturn('test');
         $userMock->expects($this->once())
-            ->method('setSalt')
-            ->with('123456789012');
+            ->method('setSalt');
         $userMock->expects($this->exactly(1))
-            ->method('getSalt')
-            ->willReturn('123456789012');
+            ->method('getSalt');
         $userMock->expects($this->once())
             ->method('setPassword')
             ->with('hashed-pass');
@@ -173,7 +130,6 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase {
         $encoderMock = $this->createMock(PasswordEncoderInterface::class);
         $encoderMock->expects($this->once())
             ->method('encodePassword')
-            ->with('test', '123456789012')
             ->willReturn('hashed-pass');
         $encoderFactoryMock = $this->createMock(EncoderFactoryInterface::class);
         $encoderFactoryMock->expects($this->once())
@@ -186,58 +142,36 @@ class UserManagerTest extends \PHPUnit_Framework_TestCase {
             ->method('getEntity')
             ->willReturn($userMock);
 
-        $userManager = new UserManager($encoderFactoryMock, $generatorFactoryMock);
+        $userManager = new UserManager($encoderFactoryMock);
         $userManager->prePersist($eventMock);
     }
 
     public function testUpdateResetToken()
     {
-        $generatorMock = $this->createMock(Generator::class);
-        $generatorMock->expects($this->once())
-            ->method('generateString')
-            ->with(16, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
-            ->willReturn('testtoken');
-
         $encoderFactoryMock = $this->createMock(EncoderFactoryInterface::class);
-        $generatorFactoryMock = $this->createMock(Factory::class);
-        $generatorFactoryMock->expects($this->once())
-            ->method('getLowStrengthGenerator')
-            ->willReturn($generatorMock);
 
         $token = $this->createMock(ResetToken::class);
         $token->expects($this->once())
-            ->method('setToken')
-            ->with('testtoken');
+            ->method('setToken');
 
-        $userManager = new UserManager($encoderFactoryMock, $generatorFactoryMock);
+        $userManager = new UserManager($encoderFactoryMock);
         $userManager->updateResetToken($token);
     }
 
     public function testResetTokenPrePersist()
     {
-        $generatorMock = $this->createMock(Generator::class);
-        $generatorMock->expects($this->once())
-            ->method('generateString')
-            ->with(16, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
-            ->willReturn('testtoken');
-
         $encoderFactoryMock = $this->createMock(EncoderFactoryInterface::class);
-        $generatorFactoryMock = $this->createMock(Factory::class);
-        $generatorFactoryMock->expects($this->once())
-            ->method('getLowStrengthGenerator')
-            ->willReturn($generatorMock);
 
         $token = $this->createMock(ResetToken::class);
         $token->expects($this->once())
-            ->method('setToken')
-            ->with('testtoken');
+            ->method('setToken');
 
         $eventMock = $this->createMock(LifecycleEventArgs::class);
         $eventMock->expects($this->once())
             ->method('getEntity')
             ->willReturn($token);
 
-        $userManager = new UserManager($encoderFactoryMock, $generatorFactoryMock);
+        $userManager = new UserManager($encoderFactoryMock);
         $userManager->prePersist($eventMock);
     }
 }

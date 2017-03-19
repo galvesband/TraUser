@@ -15,19 +15,15 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Galvesband\TraUserBundle\Entity\ResetToken;
 use Galvesband\TraUserBundle\Entity\User;
-use RandomLib\Factory;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 class UserManager
 {
     protected $encoderFactory;
-    /** @var  Factory */
-    protected $generatorFactory;
 
-    public function __construct(EncoderFactoryInterface $encoderFactory, Factory $generatorFactory)
+    public function __construct(EncoderFactoryInterface $encoderFactory)
     {
         $this->encoderFactory = $encoderFactory;
-        $this->generatorFactory = $generatorFactory;
     }
 
     /**
@@ -52,16 +48,14 @@ class UserManager
         $plainPassword = $user->getPlainPassword();
 
         $encoder = $this->getEncoder($user);
-        $user->setSalt($this->generatorFactory->getMediumStrengthGenerator()->generateString(12));
+        $user->setSalt(bin2hex(random_bytes(12)));
         $user->setPassword($encoder->encodePassword($plainPassword, $user->getSalt()));
         $user->eraseCredentials();
     }
 
     public function updateResetToken(ResetToken $token)
     {
-        $generator = $this->generatorFactory->getLowStrengthGenerator();
-        $newTokenString = $generator
-            ->generateString(16, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+        $newTokenString = bin2hex(random_bytes(16));
         $token->setToken($newTokenString);
     }
 

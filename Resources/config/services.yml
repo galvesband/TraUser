@@ -1,9 +1,4 @@
 services:
-  # Exposing RandomLib/Factory through a service
-  galvesband.tra.user.security.generator.factory:
-    class:          RandomLib\Factory
-    arguments:      ~
-
   # User administration class
   galvesband.tra.user.admin.user:
     class:          Galvesband\TraUserBundle\Admin\UserAdmin
@@ -36,7 +31,6 @@ services:
     class:          Galvesband\TraUserBundle\DependencyInjection\UserManager
     arguments:
       - "@security.encoder_factory"
-      - "@galvesband.tra.user.security.generator.factory"
     tags:
       - { name: doctrine.event_listener, event: prePersist }
       - { name: doctrine.event_listener, event: preUpdate }

@@ -140,9 +140,7 @@ class SecurityController extends Controller {
             $user->setToken(null);
 
             // Now we need to generate a random password of about 10 characters
-            $generator = $this->get('galvesband.tra.user.security.generator.factory')
-                ->getMediumStrengthGenerator();
-            $newPassword = $generator->generateString(10);
+            $newPassword = bin2hex(random_bytes(10));
             $user->setPlainPassword($newPassword);
 
             // Save changes
